@@ -1,0 +1,102 @@
+/* Japan Travel Visualizer Base Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-in;
+}
+
+.zoom-in-95 {
+  animation: zoomIn 0.2s ease-out;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- PRINT STYLES --- */
+@media print {
+  /* Hide the main app UI when printing */
+  #root > div {
+    display: none !important;
+  }
+
+  /* But showing the print layout specifically is tricky if it's inside #root. 
+     Instead, react-to-print portals specific content. 
+     Usually, we just need to ensure background colors print. */
+  
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: white;
+  }
+
+  /* Ensure page breaks work */
+  .break-before-page {
+    break-before: page;
+  }
+  
+  .break-after-page {
+    break-after: page;
+  }
+  
+  .break-inside-avoid {
+    break-inside: avoid;
+  }
+
+  /* If our PrintLayout ends up being mounted in the main DOM but hidden, 
+     react-to-print handles the visibility, but we can help it by ensuring 
+     print-container is clean. */
+  .print-container {
+    padding: 20px !important;
+  }
+}
