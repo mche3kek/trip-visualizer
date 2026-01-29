@@ -1,0 +1,510 @@
+{
+  "title": "Japan Adventure 2025",
+  "days": [
+    {
+      "id": "day-1",
+      "date": "2025-02-03",
+      "city": "Tokyo",
+      "startTime": "10:00",
+      "activities": [
+        {
+          "id": "act-1-1",
+          "name": "Shibuya Crossing",
+          "description": "The famous scramble crossing.",
+          "startTime": "10:00",
+          "endTime": "11:00",
+          "location": {
+            "lat": 35.659482,
+            "lng": 139.7005596
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN0QNWxbY1rYvEDv39kASaEnAmf4d7vWgqZWg5DnjlQb5f_Qrtb5I8QPcb0wXyFQ32QDt5h_rGlLi6TVnqHQRyApCkdB07wU-WzjYQ9EvlU1SuuW7u7kLXVg2XGlwRRY2IVdE4RvtsV5Xkw7JNgHVdhy68A-sltteQMVu6Xb0Kj0DMT5weq6J_suf3pXfOmkkXGxDNCay9xASe2cOjFU8rt7uV_rcvc-5J7WaxPfYGZZxv6MGY3enQBckXCzLTEEetpltejm5ZZ8buTVO5zqLRQYwtk4kC4hsv-8EjXqZQRTKnIAl7IbgaUxy6GDgU9LPpvMuLJWPliONG3R3wvpIRTQ94oufOqJtynHpaddJq14MAV5nO7r6XxeGvN1f0uxZUvDobEgujQc-GtPalosMqt26yw6xgIYv4jkzZR_bINHcbymJy1d47cpCQRwC34RhbKH-mo2xCkboLNPcOt3pqElzXzQoX8sWAB-SF3l2eo8qJLxgenLJErdMop6XbrLDkt4UAOjYeDmAGFxmnNfE4lrnTUyvBBw7zBOSCwMnrtnASMaT1Dqt-7T_1umzoH3AC1w4H7k&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJK9EM68qLGGARacmu4KJj5SA"
+        },
+        {
+          "id": "act-1-2",
+          "name": "Nintendo Tokyo / Pokemon Center",
+          "description": "Shopping at Shibuya Parco.",
+          "startTime": "11:30",
+          "endTime": "13:30",
+          "location": {
+            "lat": 35.7289056,
+            "lng": 139.7193245
+          },
+          "type": "shopping",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN3-JcxwmM_x8hicIFNX77wOFw0C-LJf8pc3s7RLs6zBrlmPd7JWQmw1MOABsZVT-NRpsA3e8y3PUSet0-VsDwbe83_uBGh_9euW-IhEAByiutwATkLmqMowBJ2_A0rRyp-PRc2FFHcfPF0SSGSNcqqewWBtLPmAEsm1WtD60tK3fiHep_-nqwATjT4Sf0pJONfdTUghM4sODIxKlawOvOoZiVcLxYmlw7IKF0gCw5_YWC1o_6DDQpfiG5_1g0b0ELqhm_XLbr6IsjICTJumw1Ol2q67ammhpyPQNduBX5tyki0OtL4PZBf4vqU4A5A4l8_Iw37J5p5duf_-DhjbfLqeC0gEhHMpiQOcD02a6FUesdzd4NR9T3h-7FRtXZf_2PlD0X_Xk036UPVj-QsRW5mcRrr-jZLEdIiAc4q3wRt1td2cxOcOPPrXHK8qky_KNlQdE-861yQy9vmwDVXgZA4Qc_5D3b6mNu4acY1FbQxwfi7jaVi_t0ageHJGPiU-Afppym3ctjfpwamub-vPVFHQOa2B9gJGAt3ViRxRzL8t_DyKcRh-Nh4z_Umz3ewiK9FSt7VV&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJJWdNBG-NGGARVcT12Z5mXFw"
+        },
+        {
+          "id": "new-1769714009128",
+          "name": "Tokyo National Museum",
+          "description": "Planned stop",
+          "startTime": "14:00",
+          "endTime": "17:30",
+          "location": {
+            "lat": 35.7188351,
+            "lng": 139.7765215
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN2BoqkqgAzHTxwAWl77v5wVWhXf8tsvSABajQC3ZbkgsyQ_wT0TJHRIxC_7GFPUKxgkO_v2UodyyrndmsSUhtgDnFunGgeJlaMpVwYO6QvcM1Bmt5Aoa6pWeYjUi8KOuHbEqHEqxOp6-3yMrHkvK5OimQtp3JmYP2NTb6pWdZeWSvm5z3r2D9pusfkdWxJf2Jdh2XcM0R5CeYtpNwWpXKpKypmATstbgZoTvts0TcZNX5iYyBUfxwKx_0bP4qNOpeFbxitjPYSqAge5wx-2ROm-VXmNBDMox4b3blfIcekxS_h3OQMupUngGXIgKQO4szIV5_uhUE4NJw7xZr6gkx3CEbKBh-XghWb_8X7LXdTO1ybJtYB-77FjAN8v62QlVnMVXRMaSjrhaJapx0uFyE-ktVB8P3wKBhxTmmCXw8T2Ubrsj4hRAOmQNu5x1hZ3-Mc8yjdc8vkrLMLiek-ZWIGF9pPz2-HhzsdJudF_IM8klZay7I7C9JU4Fve4srhCmo_l-bL8360eVmRN0e0b7AD692ir7IvBXCIEptBoiUT7dHDCK0ir-LzfAvmjRpMA8qAN5g&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJEX3XFIOOGGAR3XdJvRjWLyM",
+          "lockedStartTime": false,
+          "durationReasoning": "Large complex with multiple buildings and extensive historical collections.",
+          "pricing": {
+            "isFree": false,
+            "basePrice": 1000,
+            "priceEntries": [
+              {
+                "label": "Adult",
+                "amount": 1000
+              },
+              {
+                "label": "University Student",
+                "amount": 500
+              },
+              {
+                "label": "High School Student & Under 18",
+                "amount": 0
+              },
+              {
+                "label": "Senior (70+)",
+                "amount": 0
+              },
+              {
+                "label": "Visitors with Disabilities",
+                "amount": 0
+              }
+            ],
+            "priceLink": "https://www.tnm.jp/modules/r_free_page/index.php?id=113",
+            "priceNotes": "Free for under 18 and over 70. Special exhibitions require separate tickets. Free admission days: May 18, September 15, and November 3 (2025). Online reservations are recommended.",
+            "lastUpdated": "2026-01-29T19:13:46.762Z"
+          }
+        },
+        {
+          "id": "act-1-3",
+          "name": "Tokyo Skytree",
+          "description": "Views of the city at sunset.",
+          "startTime": "18:00",
+          "endTime": "20:00",
+          "location": {
+            "lat": 35.7100627,
+            "lng": 139.8107004
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN27ZbDSN4_flXy8U-iluqfTihG5JYlBBUXOSKdLuO-BREA7OZ1QISEbeXcBj4Mv4jHgpI4SxMP4ZFOEdFvNB8PjT9e62pnwpRECW5W8Ec2uwErYmnr7kzH2fHRkdJhx4nRvl3M06HHNrP2C7ABwm6pEX_l3Z0yYBELzjpIdRlZaIZQACnRT_-JgW6M9bxqBLvDQSWlKdOo2Il1fn87SjAb-GDXkreYJMzb11ZWQnSJscSl4AYcIiL7GQsiq00o240DpEdgFCyXL7cNcaDM1v7553E1AIqAuB3koOOr13qxWEeUGNRePeSmBtPifpAdpA6fu2Pkc5XPiwZl_Wt5zxEskkOSl7Ccy5MlMbvHdSoNpPKzN6VYuWAdF0KdqnP4AarAsedHd2-5y5xjnmmm7qQHImvkw3ZhZ497LxJwzEeYURCBqOxM0umoV_YT76rRhYro2UKvfRZlpNq08SUG7VbzXQFqMzoTSuqSFk3akVmtpY61xbHtcqTPSmOgecc8QCXtPNyqyF5FvFEBBdySO39a4ZCHCWYp-eTXxVv2Lw8JnCQ5iHk_HoptjPuQht6T3pteg7USw&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJ35ov0dCOGGARKvdDH7NPHX0"
+        },
+        {
+          "id": "new-1769714329132",
+          "name": "Ueno",
+          "description": "Planned stop",
+          "startTime": "20:30",
+          "endTime": "21:30",
+          "location": {
+            "lat": 35.7087296,
+            "lng": 139.7741538
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN2914d7iMeFa318gN3bU_gMUAKfjJaey5N5IngKgY4Nhj15ivbB8haWfGFQ02fch5wCuVbk8LrqtOcGpc8HSB0yqzWMekRhy-x0WJht-S6eTVPplONcI7N9r5RgnuCL9-f60Qt8koRkStey767F3qFPDdb2y4mu_Ptt8k2dP7XNBZvGqpdQL0lGJb2i_z2IMsxMLvDm8bS_Nyau0knUWs5lkaBtyecCK2b9tHqaNbCFdBY6ehRn1xr0lMSyqsneA4A_Q8fxp8bQejCVZzHiuhy8yYgtLFm5SfRCDWgLYkfKLaJCsMunrzXF9lcQKr9DpLO_mA1ImCRHMxIjW3HPP1Le0i7Hl5F_6a8Svx9XN-jmFuoQy5M2a5vhdD9gzP8BQogGOiviRzPNzj8u64YmLBYeBYo6BnPsfWQqdXbq4ZfQTBBzN7nXSdHsIHar4mV8_eR8sctb116AiiiWRFYSWxNS2Wm644DdSssQZxrRwKqT42xg2F6FQHwD5LDJFc4ZYckcBv7GZi8BvKirBzkH3FHpWAxaRxqT3VglT1WsV1YTpk4S635IxtCs4K9igBSREiIW8bnk&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJs-soi56OGGARvvSyPcqIups",
+          "lockedStartTime": false,
+          "durationReasoning": "Large park with multiple museums and Ameya Yokocho market.",
+          "pricing": {
+            "isFree": true,
+            "basePrice": 0,
+            "priceEntries": [
+              {
+                "label": "General Admission",
+                "amount": 0
+              }
+            ],
+            "priceLink": "https://www.tokyo-park.or.jp/park/format/index038.html",
+            "priceNotes": "Ueno Park is a free public park. Entry to the grounds, temples, and ponds is free. Separate fees apply for Ueno Zoo (600 JPY) and the various museums (500-1,000 JPY).",
+            "lastUpdated": "2026-01-29T19:19:39.461Z"
+          }
+        },
+        {
+          "id": "new-1769714336745",
+          "name": "Akihabara Electric Town",
+          "description": "Planned stop",
+          "startTime": "22:00",
+          "endTime": "02:00",
+          "location": {
+            "lat": 35.6996473,
+            "lng": 139.7713703
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN12P15D3l1Yk_6OMODZwx50NJAZ3sb4XGX4dwOUG3pO1H5Mf3D251T09NyZYUJUcfNLN1O_rJFjjhe02xUCyOdzYkz2CNDnSFhDR1dUbw-uojX7XjSkHA9UXcsrnBwtIy4lv5O-OxoOkdl4ZcX1xo7yeE2IT-VGYAck3IXhKAnbiFK0H2mvJPaRELAQOEZumDSWq5csdfskvxiOUiJKDzEbkXcVgWRR8qO581SseR3NGDG_O7icqRkjO9adXHssTUWzm9rsTXYlstF3NOMAEtDORGoYWwmMjs3IbBRM3Gq8sKZ-goOJHCkK-IwP_2ETBNHPBpPQCyUnOh6WAl8-0IeWj5fmvEaS_YbNR3GTzPd_gE1AMXbWAwpj9OJdnmgSBgZDDHi6SExGL0r74DG-xkZ5UoXF-VgsoIdYJ6l2vgL_UIUOlFbTfv6l4TtUDb4ZOL5Q5b2DcnhT_6HF63N2gxmMECD9dOzZH-b_tBEsBjPfV1D78gp_wqfdaPPAW7ghU4D8_GoUoYnvX_Y4ChztaEVQn6R8nYFs8XogQ2zNhWMTRZznVE6LOGA9BgRSjKtkhrDnRg&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJzdWdgh2MGGARh4kg2pVZL3c",
+          "lockedStartTime": false,
+          "durationReasoning": "Exploring multi-story anime shops, electronics stores, and themed cafes.",
+          "pricing": {
+            "isFree": true,
+            "basePrice": 0,
+            "priceEntries": [
+              {
+                "label": "General Admission",
+                "amount": 0
+              }
+            ],
+            "priceLink": "https://www.gotokyo.org/en/destinations/central-tokyo/akihabara/index.html",
+            "priceNotes": "Entry to the district is free. Costs apply only for shopping, dining, arcades, or themed attractions like maid cafes, which typically charge a 500–1,000 JPY cover fee.",
+            "lastUpdated": "2026-01-29T19:19:12.507Z"
+          }
+        }
+      ],
+      "travelSegments": [
+        {
+          "fromId": "start",
+          "toId": "act-1-1",
+          "mode": "WALKING",
+          "duration": "1 min",
+          "durationValue": 0,
+          "distance": "1 m",
+          "alternativeMode": "WALKING",
+          "alternativeDuration": "NaN min",
+          "alternativeLabel": "Bus: NaN min"
+        },
+        {
+          "mode": "TRAIN",
+          "duration": "37 min",
+          "durationValue": 2220,
+          "distance": "9.5 km",
+          "transitFare": 180,
+          "fromId": "act-1-1",
+          "toId": "act-1-2"
+        },
+        {
+          "mode": "TRAIN",
+          "duration": "36 min",
+          "durationValue": 2160,
+          "distance": "7.6 km",
+          "transitFare": 340,
+          "fromId": "act-1-2",
+          "toId": "new-1769714009128"
+        },
+        {
+          "mode": "TRAIN",
+          "duration": "37 min",
+          "durationValue": 2220,
+          "distance": "5.0 km",
+          "transitFare": 340,
+          "fromId": "new-1769714009128",
+          "toId": "act-1-3"
+        }
+      ]
+    },
+    {
+      "id": "day-2",
+      "date": "2025-02-04",
+      "city": "Tokyo",
+      "startTime": "09:00",
+      "activities": [
+        {
+          "id": "act-2-1",
+          "name": "Imperial Palace",
+          "description": "Historical site walk.",
+          "startTime": "09:00",
+          "endTime": "11:00",
+          "location": {
+            "lat": 35.685175,
+            "lng": 139.7527995
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN2duE8Xr_VitPCFOsHogb6LS2PvKcx_YYG8uLOk84D_1woC1Y_uC3CJ4XKIMPCVyfpzv_smWmfSGcef4cTldHhE9wbAijIOL4FlypdB5QFVnKJifsWmae1M0MvGJLi05804Nw_g7Z7GQJeZkwWa6ZYIXD4W1ZfP68vEc5zowhxgwOJ_6fUlSXeINbmeLOUEeQkS57gu9Zta7RERnIoKosUM_TufF9B7sGh9jeiDBFDsWAh9KUkoXj4dmkEn6ZKrQAmHdUfP4x5E7sOzQDjRoRZ3IPem0xUDoB7fdIBi5yfwVpib30BBS9fY6WMePMBkDhw8X2RPSST2NiiI5bR0ibW-Es0kI898oJoPL5F_yiTVMU0Ihk8NtrQCGKYJ_mKe3_RDwPemqEywpuseG6FpNmwy3Zyb4Zpo6CMoj3LjINkR1y8EXodAQWvs6p2ZJzhTOD59-sJEsS9-0rykad3-UEkRHnOL9V6SPrb9TYDVYTlvZVynFNLkii1v59vF1WyGZXzk5v5DyfP4XqqaI6fM_627NYOom22yJuWxZiE0seSDBwVqLgjtxS2NFPpnpZmM784IA1Mk&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJTQbYAg2MGGARt22eNwtfGtE"
+        },
+        {
+          "id": "act-2-2",
+          "name": "Harajuku / Takeshita Street",
+          "description": "Fashion, crepes, and crowds.",
+          "startTime": "11:30",
+          "endTime": "13:30",
+          "location": {
+            "lat": 35.6710335,
+            "lng": 139.7051821
+          },
+          "type": "shopping",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN3tnESsg7sFhbec5xSGmDk5_lMapxvarF3k0R-wfVtajOFYW1rP3ukgxp5932Dx5Q6G3jwuoVj9TMhffc7kjjQ40jHIQN2z_ILH4mX20j4eMIGYhKuvRHEN5nxaI_bRmT03VGhZ1QjC7VkxhB2luKZtDzfPZEq4AEmzVy8dJqjkXMSFd7_hMoVY_9iNQRt_y20vzxmuJj4M0Eq76zg94Mub7n6QNw-4VX2gdFlKH9BAgA0nrM5fbGID9Etx8Atm_CPplLig1do3Yw3lRHMH6ojNVylxY1pBdWqek8WzRKWGv8-ieEpD2iCo0hNLv1BMostsBQOIl4PRwRSqUklhJLHur3kydnCswqOBKVfa9bpUTg-OhAinv7_iWdZ5K2fjoLBFzIuSk73HpDKB9SjJ7bLX7bVqxyxrD_I0cXBXnBhTwU4W_6jWowtBASiP1LDh-9PbgU7xdI2M-CBmIer4SSVNLng3Lt3AIOlUu-jNOGziz4ce2L-PsgIQYegwtm5kgBbSZckZ1DUj2qU7JWdD9juxSeEokJBRpIFHwN2Fbf2EJJEHXdAwQHsdurqZClpwH-5XYg7U&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJlVne8bqMGGARtX5O6ojMvsI"
+        },
+        {
+          "id": "act-2-3",
+          "name": "Meiji Shrine",
+          "description": "Peaceful forest shrine.",
+          "startTime": "14:00",
+          "endTime": "15:30",
+          "location": {
+            "lat": 35.6763976,
+            "lng": 139.6993259
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN2-3f4TRYVNdVSKe07p7g8kNNyvspm1Neu_KIa8bHnDNvFYdq6EPGKNRkojRdZD9lCTrFgsuvX6Su5IRgwE3M75F60fXaCQYTJmBIo3fvGwiEGfZousiTZqNMJiOpCswLNAJTxFwsexncwgGj_7whZ7Ku-7hL51wrLkvuisDo2fwxlFWiFwI3sJjDD27rzfdhvd3-opg5oGq3JouGlyJPT-tIzYhTnYard4VfvFD4skNlOxgWpjhQGfgxc8f4R8izTIYh31foRt_KZvTvz9Pl0dXuIWJd2VN2oOgJ3ilDXUExwAicG3AvxnYQ6k0zeu_5DZFoJuUeHuCQqnCCrgtvdAKybmdbOy_-6gpOcEapZxcAWrsUzokrU0oMeHtIjsPF68175iktwC6aPPK4mcgWSd63ZKrdQdUrj7bsi-R0dEjmDPXf_y-LBx2vgQR9kzIjgCho2m4gimEmsVn6ehPSRdXr01xkTANhxSH6pTSTz7BZGgUanZvww0kcJqPSeguQ6rXsrYbkj7yxWYMuvDsafPivMJF34kTmF0s5yW0WlDc3YYP2JGV9f2u-LwPOlDedoM61765kSxGg&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJ5SZMmreMGGARcz8QSTiJyo8"
+        },
+        {
+          "id": "act-2-4",
+          "name": "Shinjuku Golden Gai",
+          "description": "Izakaya hopping.",
+          "startTime": "16:00",
+          "endTime": "19:00",
+          "location": {
+            "lat": 35.6941118,
+            "lng": 139.7047611
+          },
+          "type": "food",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN3j4qSRBxmpG-yrTUPvmx-DTtb54-pR-gEaZUMA9dG3VkWbTUNY0SdB9fMwl9kbPQhHaAfEIfi5FQbPVVXgqhEHeCOBN09fX8M1WYSJLWerTovGU6LVlc3pjHMw54V1vVAfJQSnngu47bTh-n5uTDLTgeofKxcIlsdXZ2wdVApnlGqJFDMiaimqJMRwx7MsqGqYux374oaIibDyfyDwj2hD_I_mWxTEMol6DD-NTQHtTKGB0EepTgvFxgr105RZexpnDkCrTPvkEnwdNPWkl7Oz4WKqId0COAJ_Sl369xUJOjm0nCEV-qS7X8vnn3JKvSN_JSZPTcbmGc3jGmdA9ie_IQc6zLHw4qbqkThe5jnQP9xA7iRBMTKVuI1R3pnqtkW5Bbu1xYYREygSpczrdRm4JJK3nFOYRMrXl9_c8vkIIbQIecEBofOZhH7ZqnKfNRrq-VgvvRMtWmXVqPv-LUpjJ6UlCyEJ62wLMXtFkm8lu-4hX1UMRv1qE30p9XAJfvm67epI0RgHIlHO7Zv-fl4n09xqtAO1rDqgNweuAgUg0n54Xdzn8cP_B_yIJGJebixK59x9&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJr7mGZdmMGGARjxoMFeHApXE"
+        },
+        {
+          "id": "new-1769714118985",
+          "name": "Akihabara Electric Town",
+          "description": "Planned stop",
+          "startTime": "19:30",
+          "endTime": "23:30",
+          "location": {
+            "lat": 35.6996473,
+            "lng": 139.7713703
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN2AfRmhrYf0lyWoIjk09MNY0tNNwwGM-SUJhKP02NYZRZbNVB6_XvdITxQDCqqC5CX0hY5J9cSfQlVfEdziqMdad4aEClb0tqxcWQfqbZQTUW1-TAYO2IhqEiN2SY4vFmqmewVmJT2jspZ5yNtuhPKtwBhJtxBZTyFQ2SKbYH3HMETKd5VnpD0LauOq-yJWWse0PixWr86-xwI5E89UqPEdRTkafsAoj-ieUgbbe6T_gWSAbLX-6d74S2SUKr1ngXrUnQbbnKkZ7iBe68omamp5fVef09T3VdkpS6gALqE1fIWqwrYgML0iwlGwQYBE6oRhoPdxwJspCbjFNypW0rA_SwuBWmvMgrjfvZj6E-AvJXaSDx-0jh8-c22GuHMYTp-CnQUnuJkNqsvYgTVhy4-hCMjQpVOYRR0UU3Vdt3em4NrMNlTQohdPQJTDWhr6k5RnkG3FnwLleSZWMLGPAXl5xMqn0ejSdayfL9c3Z_MqP2Ju0WlVkjWX9UI0K8a28o7cL-n91Skpmq2lYg-ou4LppP2l5nR1wAZwxQ5-WxQQRHz50vvUOFLTTVxPLGQJ16M7GQ&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJzdWdgh2MGGARh4kg2pVZL3c",
+          "lockedStartTime": false,
+          "durationReasoning": "Browsing multi-story shops, electronics stores, and themed cafes."
+        }
+      ]
+    },
+    {
+      "id": "day-3",
+      "date": "2025-02-05",
+      "city": "Tokyo",
+      "startTime": "08:00",
+      "activities": [
+        {
+          "id": "act-3-1",
+          "name": "Fuji-Q Highland",
+          "description": "Day trip for rollercoasters near Mt Fuji.",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "location": {
+            "lat": 35.4869467,
+            "lng": 138.7805511
+          },
+          "type": "leisure",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN1ppui_6l-GztjHCSFBnrj-42LAy9HRcHLNbaq8qwzkK1dUIjH-FMfmGrz-Q7jlzcjx1Pw16rcowCsx21q4k2us0YlYf54hNlcF3GSVmPBOdTWahGjwlM90dmVULC8ZbAW-41zpC7kLrtSzwewFYZADV3HFTXyNRVJuWknu_SYAbXTcitbqokrg9l7hvvaLQY6-HXqg3mbaQwWEPvSIK00I6tk61-avorCIyqxOdXOL7TjZL7vHt7BBcs1POv4he732fDcRaVsBA_c1CYHG-_TxTqPyjVUeck6lT6Kt_ERvqQ9Uv63mAKKbIeKCkvEMRrGj0SRo0g5er0aT64QmccAwl--Yengjyd1XECe9X105LRvYza7QCy3O-uRrEHz8meo_AACHbdQN3BekWk_Jv1dymuQ-v2j7YU1jrIktLLQ-Wm5ljqceg2_pVcWSZ8xwO4DMRyMr55qo77qcsMp4yYXHlnZhGydQkNdDAZiFEl-AVxjnvPxBJzX0S95YN2nObjFlvcwSQ7ZAibrJUlSlSxs6CmwGI7ZmqYoHWadD-6RdShaeUEPOiGXvUlAu_6H5aY6kgTW_mhwA3y_ZbkELfdRY-J0&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJL7jIyupgGWARMDfArSEwykc"
+        }
+      ]
+    },
+    {
+      "id": "day-4",
+      "date": "2025-02-06",
+      "city": "Tokyo",
+      "startTime": "10:00",
+      "activities": [
+        {
+          "id": "act-4-1",
+          "name": "Akihabara",
+          "description": "Otaku culture, retro games, electronics.",
+          "startTime": "10:00",
+          "endTime": "14:00",
+          "location": {
+            "lat": 35.6996473,
+            "lng": 139.7713703
+          },
+          "type": "shopping",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN1-cqy2qR1BRhQR58ngi3ZD4GtH4OPcsnnxhtCpQ883-UH5x6kzvS8xYebnPoXGkol9x2ClmjvN-M8hJiw5FZNL_Py6gEMcF5cPlPdi3_LP5dRKgAEDOCRVPFQv7hPUfhmtIqpIUOSAnwUAYE_o9FFzT3Dv_Ezkr64-LqzEKo11f61wxjASf9tVL7RWc4NZ8JzpFdhoCPi5lg02lwlPymEFVMcsjVDDdGgsEEvKeau8gYQdTG_-0tL-hiIkfRr5dwhy3s6votyTDxk0a43liXjgDqEJr-XUicth0RfQO0Ls4ZQSaWbT4Li1DN_8_0nF_YiEZqh9Wr9IxORc7i6IbM-fAOVBLQh_V_RP-l0cnlw5C_f7wIUmbRGs5O918PGKH-jaFUax9KuJkU5bruAqda8ie4BUOmkJ-vR0_UtZfpFpnTpEd38F7gEH4PXReInApuYFIfvHGXsjmfld3kduE7oo1uYMuET16Fu-mRvXFfKnQrWEzn3jgkpG6l-7Hr3_VmJKu7w9Kvgr3mXUtoh8y8PAbwjjt5vVIF5hIqt8967sO1Zrfhsw8NSt2wxbkluL9eBDWA&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJzdWdgh2MGGARh4kg2pVZL3c"
+        },
+        {
+          "id": "act-4-2",
+          "name": "Senso-ji (Asakusa)",
+          "description": "Old Tokyo vibes.",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "location": {
+            "lat": 35.7147651,
+            "lng": 139.7966553
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN0JTRuPyvDU9UntHClpg8MltWBf2QxU85_ilsE50gIy2R_gGKpsHdXd4UfzGPkvY0UcF0o3bPfjoa-JAuyLK4QIbAeOuUg2KHxXR8uuT256LN5I3w6kYTSiIypXf0gyNcpYHXT4EVB6gEw06YOs4vZgOQsGLO7RqqQ7JBDx-gzuHysC0LvaJhGzmnPkyAFft54L3CYmKo_B1m15ajcR4kYwC109uS-oFGeJ_2jiw_Sjr177bNrgzaBXlTN6VN90KbzabRy7LGqPKb8UORpbI2EQf76vmPWyGd_MVfZu3HzodszDxjMYElDLbDKYK-geS9F6hG5PXRchdfXDW7nYpzrpgKF8C_e2QJBW7AoZ0a3iG8R0GS_k6Iz5j4pvedw0H4HNpQkGl0ITUz9cguvVRyhqnoXHEjkYUXER1NWIuIjrSsHUh-nt_FK4fqHfc-NAIlPgobIkHIyv421Cij28cB8hKCu3qKZ8HdqgSjnHH3TyxYn7eWYvYnkvlHiAd2mOL-DvZzRr0_NU7JxAXx9lwX-1qzuJHQ_abg7N-cFFb7v_ifZcJhGY1GqLlS-OOV3t5UXJFZj1&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJ8T1GpMGOGGARDYGSgpooDWw"
+        }
+      ]
+    },
+    {
+      "id": "day-5",
+      "date": "2025-02-08",
+      "city": "Nagano",
+      "startTime": "09:00",
+      "activities": [
+        {
+          "id": "act-5-1",
+          "name": "Jigokudani Monkey Park",
+          "description": "Snow monkeys in hot springs.",
+          "startTime": "10:00",
+          "endTime": "14:00",
+          "location": {
+            "lat": 36.7326856,
+            "lng": 138.4621364
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN2cxQKRsIKVUENTr9KF-eHA9_s-GgNab_vuWYd2Nj8oejw-zyWgrmQK3TrrMbegdxouKGt3sUCnooBH9TaMiM-BrZUAA3K71v8oQKHNLnyqZ_jBbplQiwpsCUDhCIMmqAsC5pK-LF9iuoB2EfQMHvQaAIKsGKHBlENSJZekqVegCUijxoZUn46vYDV5cQnlw8sWYqCs7GeEBlukxDbdxf-gLOJNYiMpblnxxudTqG0F5H4b65PEISvCbscsw55w_6Wyoxdrsc80FCUO2uAZdfoPwVmPqZ7eqWRFuMVmZZMGH00956_ADvi0xQ90l5L62hV43g2KynwPpLnVWkhjFzsZkKr7ikUc4vInIgqIdnH-QibrCqjxjAAbMxEFRW0lMWix0kES_2pkbgCRRoKuRv_cfl11Gowu0z6VJTJLNhXDul3LbBUd-eRLzwbWqCykTTo8I4k-sdy5D82hHIAJHkYuhF6LQXwTOarVfe-2uBjBf0VdKebDMUt8X25caPqlTyG2ZOx9hIfrQbYN_Y3iTWM90bO_ZJoNpbSXWlaLHmkLP4V44DY7MDDqsaGq4foyxJIBm9HatfEZqpLiFbJAaWRMdtA&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJzyCiTOzzHWARH9aN73OLTfY"
+        }
+      ]
+    },
+    {
+      "id": "day-6",
+      "date": "2025-02-09",
+      "city": "Nagano",
+      "startTime": "09:00",
+      "activities": [
+        {
+          "id": "act-6-1",
+          "name": "Ski Resort (Hakuba/Shiga Kogen)",
+          "description": "Skiing in the Japanese Alps.",
+          "startTime": "09:00",
+          "endTime": "16:00",
+          "location": {
+            "lat": 36.71885280000001,
+            "lng": 138.4922758
+          },
+          "type": "leisure",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN3jMa-PKuNNzLpP8phH3iXSzqT2Vz8MJA_uB6v7YS3dJPewwcRu46TjqBS_oKcdq50D18YSSOW042Tbn-tzhrs1dQL1xiYddXHY3saPNJIJtmo2U-3E8fDDLm268552N7qeFd8nECfxqxcHWfpakE6CL96ICyLNXcKkucZS-HAA86AgpZspVWhHZbKWaUMvA0RqmnpIK9al0ruYiToaHi_d-6IIEp0V51E6bskxYyQerhVI3nepm7S68pyLFH9mNyVpxdRxu98g1G_U8vWBt4oEKu2UEBiRXeaX29chZHxR6z0HKtKU2FgLlmQ8Acf_D_AX7boxSRF5i61GDblKG21D3oRICH2WD-xvRrj3dJBBnQQ-iLC8MqTZGhsYg6lz6hBsRewjx65mY6GClDModGkjTRtFtm7gtZBJYVjIMMYjsLiqZz7gNoTSzCd_hiNPt53u2QIV1SpGDq8-7xkMQY9onpgfG4FOWq9gKkEYPJOXCiQG5Uq1-Ilox7Zk802MRC-dWCGWJ2HaQrdY5fQm7Kg4XjNjSjy3-ektiy3NObEQXUDK-VGCcVGbDlIHj-0IAZBA2FFpASZn8g&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJ6yBeCMbxHWARRU5Kxn7wJXk"
+        }
+      ]
+    },
+    {
+      "id": "day-7",
+      "date": "2025-02-10",
+      "city": "Kanazawa",
+      "startTime": "10:00",
+      "activities": [
+        {
+          "id": "act-7-1",
+          "name": "Kenroku-en Garden",
+          "description": "One of the three great gardens of Japan.",
+          "startTime": "10:00",
+          "endTime": "12:00",
+          "location": {
+            "lat": 36.5621278,
+            "lng": 136.6626515
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN03bSUQIktEpeODoUuXq8jBN4N5unhGfaK1zrIcGivIjpQnzB2KBwWviYz7pBHp4H2XlTN9k2Sxu3MWxSZ-3wimql74ErnnNb9xxB20FrsotPwgLG0uSdWTiP0mF1siUkMwdTe_ZgbEdpJmXHDFiaFz7e7_goo4R0kr1kpLgLk11ri50gkAvLWKygJIH61ngft7OvbnWDm-2gAiHXjj2KoELW2XjDeJY3tVJLEUmPOkRkU8d-HEF2KecnfkzlezxJcLs_j8FsX6G0dmvpUnKRujwsk9-xMXkYMoNMmBtQhTiBP8raty0teDEJBlRLasmJGlghJlCaZWVoDIYdaJzIzrpP7loLX3HF4uDwhPaLboHyL3V-__QW9UiGJzKYX2OIHMD53VbG2achc3iy7Xsmc9XK6HHiTwpkLZMJYCsQsrsUbtbeDBmPocMZfZPkm5Gf4als8QdV1tWcqQkXvYAbTSlirUMwsi6Stu0sHE_gAFohFYU8vWU8dMytc7FNGVwgT-BEywwH3CuSlYOHBsunxS6tnygymK6IUu4-JfatTYFy2H3QOYShLG5Kf9z0oD21v0nHRS&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJBVmy-YMz-F8R5PID8D17Cpc"
+        }
+      ]
+    },
+    {
+      "id": "day-8",
+      "date": "2025-02-12",
+      "city": "Osaka",
+      "startTime": "08:30",
+      "activities": [
+        {
+          "id": "act-8-1",
+          "name": "Universal Studios Japan",
+          "description": "Nintendo World and Harry Potter.",
+          "startTime": "08:30",
+          "endTime": "20:00",
+          "location": {
+            "lat": 34.6656768,
+            "lng": 135.4323185
+          },
+          "type": "leisure",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN0vio1yXkDt3f5GGQ91yT9yl5wSKYZTl_XqZ-_JGXKnCjgHGNUBAzFvbMoxx1fz8x-g7Gmz5PCSDIJ5mg9rWYJwCIP7w5dsS2L8JpmnmX7LsD6_eE5VbSeR0ou3imQd24rvgnR6MphtWpI__9FdXI89o0G0b_FO96t82jW-3AZmyeghqY7s4wvq_HPTzfH-i3HVeSI1jYwg-t5QJx4aZTE7MFfo6TQ__l8voba-PmXVrvNFCWdFX_da01__5VmUI0ayGC53GXKCjE3sM9PYnO9w7YmcLuHDA88oiDkyoPVbL-uP9HAMkdtN9_fzP1KU4elqGq_GggLC1RKutBXSXUKxoSS91uimpJJjZGVmD8N6PDG6sfG9iF-iGDIGrvFVBE4VLABnPhSYOD_8XsxJbyAxzrBFoGi8sTxn-bfq_hD3Np-ydL6vTMa0-NWC-Fg_EjwYERCHBCbZbgmxOpeavacV1IJIlvEQ_FdvVx71I0sCSU0NnqRHgNwlFSkmhTNAXRTFoaT-CHMO7vctpYPaqSRj0MgfT1gm6e3ilWZyv0c46aHRVl2qMeSkfRHaEtF33dcJlKKC&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJXeLVg9DgAGARqlIyMCX-BTY"
+        }
+      ]
+    },
+    {
+      "id": "day-9",
+      "date": "2025-02-13",
+      "city": "Nara & Osaka",
+      "startTime": "09:00",
+      "activities": [
+        {
+          "id": "act-9-1",
+          "name": "Nara Park",
+          "description": "Deer and Todai-ji temple.",
+          "startTime": "09:00",
+          "endTime": "13:00",
+          "location": {
+            "lat": 34.685047,
+            "lng": 135.843012
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN0kyJNCs7revavuCd1H8I4nHIpZauVq0J3sNdQbhLCkU2Qm1whxhAxduiLiFvCLR4vPZbNhwQ7VdqoTjTcgNt7GsPLct8uX3QwzHTCjvBPojbqcXrKtXxfyZYrlGTfHHvgsB519uSg7rc5aUveAKTooVU0lRMBfz1K3WCsMpUr0JlP8blmDpciKAnCLyBGjnrmE64jJEfVN7NQ1xDxLm4qrpDSEWotchZG8dWMYClFRnjblWF7pJi2FR_aemCSGI6Mq8rhEfeg6vLSvaW1dnsyzUe22VisTRWCPgFYJymO86gi4OnxOgXUyWUW0Z25DH4s8PklKPAm3FbaHNPJY6cjMJKQFAQxa1ZPoqiNLuU7DLLRgSG64-k0oi7sBXChm5lQ8qpJzos4Y0y1JzkY_Vzc1uxrLN89NPM_8sDpdrDTKBaAWYY5vXzHatxVzQpyBUJWF5CzkVOBjR-HHE5PFpWKKeUkDaSkdvXFsUtKpXo6O8Hcyh2KCmvw5EA7fEN3DN37YXYlFoadTzDk2_2USTL3_IU2UStu56fTsGVFn1j-I00SysHe6pdJxk6EK-Ol7pRJQWAtn&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJYWCMvZY5AWARVnREV_OsbPk"
+        },
+        {
+          "id": "act-9-2",
+          "name": "Dotonbori",
+          "description": "Food street at night.",
+          "startTime": "18:00",
+          "endTime": "21:00",
+          "location": {
+            "lat": 34.6687234,
+            "lng": 135.5012971
+          },
+          "type": "food",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN3A6pP8-8JHrhWOzVFRclJ9J9zaR8ljWVZkMrbSYixKOInqyJNOFCVSz4Ea2xnEnOLubjQEaWX7t5rWqsUvb21PvePE8cAO7wJBOdwzWvysX9Hlm4V2s17cYwSVt3WxczwfpExPAChe0oToSPTo4gcgShnS3TTft5CxOQRMoEbWx98UchCsm8s8N8HoFc9YfOcgvTrYIPiEU9R8lEgROCslnQb7y2x5m4A9JMJBnGSgKmgnA4ElD2ScIYH-mtdMYuJKy8ZTEAwcllp0bO5AxcQAK-SEFE5bOjb8YUT4l8ypbRskrJEj4DZEjkaGmgh5m97SvRkcZJaP69MDmE5cqr5CHdXHHYRBNwdxxP7zzR_YsAR8r_m9hmiI7YSdMq1n_G1rXCN3K_fvQ1bXjhwwcTOlzPenjIo9JRnWjgercVj3dPsqECJKBtXwkq9ysUQKxk_k98i1f6OYqvh566qBJvk1VBkIrROZphu636-7AsJ_0ktsk-TPlMwbE0mbBkHLwASoqHxy-ydVvj6uW1TLb5Q1qkYkXQsNUgzv1BpuLSihWmZDz3sqfSbVZ-_zx8J_Hy3Q1Ena&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJ_fmKgRPnAGARkKWLtCYTu7g"
+        }
+      ]
+    },
+    {
+      "id": "day-10",
+      "date": "2025-02-14",
+      "city": "Kyoto",
+      "startTime": "08:00",
+      "activities": [
+        {
+          "id": "act-10-1",
+          "name": "Fushimi Inari Taisha",
+          "description": "Thousands of torii gates.",
+          "startTime": "08:00",
+          "endTime": "10:30",
+          "location": {
+            "lat": 34.9676945,
+            "lng": 135.7791876
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN0Gx45cdSUWDcRlMU__VgJHWGL-dIXqGqyynJOvYOf7-Tf_roM9RIa3LghzH1tR2rhBTu4LWa-O-AokiGD06UeEe57pgqpnKUKQcIGhuDuBrUH6A8o6veXFmbQcaCzm2nKscMbXvPMOi0AH400PpUOBncuK5zyCh9mdKc34NXnY7ynPJzzVfObOaBXtN9frJZktofrlVQRosyGHzwiXY-XT96oMPiblpo67899icUZdpu0aHg1Wy4BuoEj76aaeFxSQJZ3s1Whm01wsWSlvMP4dfvit_68birsKTwJgdFDy8WtpbvsUgRO8LMgmKNrrlv0vh8dovCcUylYWORqjLyDNaUyR4efiXPv24Oc285iuKwSmxOnZtshJmm1uj17VtQJI__BZYknCggz5sndTDr75POL1F2PYeC3yvhmvtcqJO8PN7JIfTG1xaWGxiTTvAcTiHB9s4NXomSnoS92tQ3ezDvkSeZJEEeIdEIcrN5DkMQIivTmO_VYR0WZ9qPU7YLR3oVM-Tn38t9GAMGoNLF2prJaGITTZpDol5D-xM78oaLLH9dpscESejESZ4C4OGC9zoNpB&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJIW0uPRUPAWAR6eI6dRzKGns"
+        },
+        {
+          "id": "act-10-2",
+          "name": "Kiyomizu-dera",
+          "description": "Wooden stage temple.",
+          "startTime": "11:30",
+          "endTime": "13:30",
+          "location": {
+            "lat": 34.9946662,
+            "lng": 135.784661
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN00wzQV6CaQgGs1dTZwwyuUKA72j5fiudF-HSrTXgmOVNTdVKFoLn0TiqwxsYaip3MFBiuqm9FLqYBC5E7TvmGLn8ASaTTnV_HFORsW0W9S66xtCF4-tgq9D8oaGMrMCizDxbPRylWL3PQRDSD9DcpFpJ68fj614J9gUVWSixy-EA1mDY4wdXi7M_tm_XpJRe9R8822vS3yItJ_EK_AiQpSvo6ipvP-kWzadm0aCNUDII9_XnpdTeLsgVE0aVaXJQwnAZoZajPUgzJe-XuXYHUiB5powdGUEguuhm9bVJRcN_-itAasWox407M30M8LjpiQQO3vCUZBdh-dvEGHCn56wmKvor_XcleL8kzgTrqFnWH_2E5-flfagwduPQh_kqO7wbaLmMhG1FoL317fUTQ7gzTlJePrLhGB6vsSkvcEMzAdHqaGeIDZm_Sgno5LdPwgOiZj--uFOlTLoy6u6lEzgM40pd-ASEdkgz2EnK5VBGCz9qtvKVaN4bYinQw_aVxyk6Sur0I6Ub4ujHM-mG-O98gxMIalmq6tPu5qdwA5CSzth3M-1Usm9n3IWhD_I1Xxk4tKFRmAQXFoQ9MxxXi-1xE&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJB_vchdMIAWARujTEUIZlr2I"
+        },
+        {
+          "id": "act-10-3",
+          "name": "Gion District",
+          "description": "Geisha district walking.",
+          "startTime": "16:00",
+          "endTime": "18:00",
+          "location": {
+            "lat": 35.0037816,
+            "lng": 135.777245
+          },
+          "type": "sightseeing",
+          "imageUrl": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=AcnlKN14oEwpbUY3-6hbdckaCgg-sbghHQlGPVMKspEjoY4IWWbSNXYNkEMgBdFhqUnukUujTinPSstbBkiZA2Wro1E2yKjMGSX9vcaCyD5PTgdT-zK8_ci-J9Gwc7OorPm2hxnecEznZ4zw7-7Z0B61o0NfZzTYHsGI5qqrX6Cxww3qx9Fwp6kCWBfkyNyfWlaNYJ4TLqI6Un8IhyVgLEmWP8wXOpHKH-zFidIxDV74El2xtyXQIIA-X3riBmgW02jzzxYXDkvH5PoSG08M5k1hvvTHL7tUHe4MiM8JyAO_igzZW3ByF8Hg9szCD5WqwHHSFHGGRcre0_h3pHHD7VN4i84SHr7CImA5EGwMbKjJ0fGkP5hsl7SP6EzmV3VLPiFPtUM7PyqYRa-qWD1RvN1R23INKUR-8xhWb2IgPUBaFJE_lIAKD90mPyfQcHtrGx_FSZ9SPD75K1pOePYHVS_S1EzXmqNochSUnNY0k7K-SGhljoHzzgAuS7ZjVlpeXrSr3ck3X_bv8V-SePnClTBSgan7l2lBEi_Y6-37xDK3VPGicQWV56iEHOTkMdLwhl539r0TZBOG&key=AIzaSyDx7L_xzGNyRyBaNE1q_0B9ZD4jnZklHHA",
+          "googlePlaceId": "ChIJZ3vGwcMIAWARtO-YE6oEyw0"
+        }
+      ]
+    }
+  ]
+}

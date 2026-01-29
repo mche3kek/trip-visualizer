@@ -6,11 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "cd server && npm start"
   },
   "dependencies": {
     "@google/genai": "^1.35.0",
     "@googlemaps/js-api-loader": "1.16.2",
+    "axios": "^1.13.4",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "lru-cache": "^11.2.5",
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

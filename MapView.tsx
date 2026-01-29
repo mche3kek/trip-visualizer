@@ -8,14 +8,46 @@ interface MapViewProps {
   selectedDayId: string | null;
 }
 
+// Safe colors for map contrast
+const PASTE_COLORS = [
+  "#ef4444", // Red
+  "#f97316", // Orange
+  "#eab308", // Yellow
+  "#22c55e", // Green
+  "#06b6d4", // Cyan
+  "#3b82f6", // Blue
+  "#8b5cf6", // Violet
+  "#d946ef", // Fuchsia
+  "#f43f5e", // Rose
+  "#6366f1", // Indigo
+];
+
 export const MapView: React.FC<MapViewProps> = ({ days, selectedDayId }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any | null>(null);
   const markersRef = useRef<any[]>([]);
-  const polylineRef = useRef<any | null>(null);
+  const polylinesRef = useRef<any[]>([]);
+
+  // Legend Visibility
+  const [visibleDayIds, setVisibleDayIds] = useState<Set<string>>(new Set(days.map(d => d.id)));
 
   const isOverview = selectedDayId === 'overview';
   const activeDay = days.find(d => d.id === selectedDayId);
+
+  // Sync visible days when days change (e.g. added day)
+  useEffect(() => {
+    if (isOverview) {
+      // Auto-add new days to visibility
+      setVisibleDayIds(prev => {
+        const next = new Set(prev);
+        days.forEach(d => {
+          if (!prev.has(d.id) && !prev.has(d.id)) next.add(d.id);
+        });
+        return next;
+      });
+    }
+  }, [days.length, isOverview]);
+
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -92,14 +124,14 @@ export const MapView: React.FC<MapViewProps> = ({ days, selectedDayId }) => {
     // Clear existing
     markersRef.current.forEach(m => m.setMap(null));
     markersRef.current = [];
-    if (polylineRef.current) {
-      polylineRef.current.setMap(null);
-    }
+    polylinesRef.current.forEach(p => p.setMap(null));
+    polylinesRef.current = [];
 
-    const points: any[] = [];
     const bounds = new google.maps.LatLngBounds();
+    const hasPoints = false;
 
-    const addMarker = (pos: { lat: number, lng: number }, title: string, label?: string, isCity = false) => {
+    // Helper to add marker
+    const addMarker = (pos: { lat: number, lng: number }, title: string, label?: string, isCity = false, color = "#4f46e5") => {
       if (!pos || typeof pos.lat !== 'number') return;
 
       const marker = new google.maps.Marker({
@@ -107,14 +139,15 @@ export const MapView: React.FC<MapViewProps> = ({ days, selectedDayId }) => {
         map,
         title: title,
         label: label ? { text: label, color: "white", fontSize: "12px", fontWeight: "bold" } : undefined,
-        icon: isCity ? {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: "#4f46e5",
+        icon: {
+          path: isCity ? google.maps.SymbolPath.CIRCLE : "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+          fillColor: color,
           fillOpacity: 1,
-          strokeColor: "#ffffff",
-          strokeWeight: 2,
-        } : undefined
+          strokeWeight: 1,
+          strokeColor: "white",
+          scale: isCity ? 8 : 1.5,
+          anchor: isCity ? undefined : new google.maps.Point(12, 24)
+        }
       });
 
       const infoWindow = new google.maps.InfoWindow({
@@ -127,78 +160,136 @@ export const MapView: React.FC<MapViewProps> = ({ days, selectedDayId }) => {
 
       markersRef.current.push(marker);
       bounds.extend(pos);
-      points.push(pos);
     };
 
     if (isOverview) {
+      // Loop ALL days
       days.forEach((day, index) => {
-        if (day.activities.length > 0) {
-          const first = day.activities[0];
-          addMarker(first.location, `${day.city} (Day ${index + 1})`, `${index + 1}`, true);
+        if (!visibleDayIds.has(day.id)) return; // Skip hidden days
+
+        const color = PASTE_COLORS[index % PASTE_COLORS.length];
+        const dayPoints: any[] = [];
+
+        // 1. Hotel Start (if any)
+        /* Omitting hotels in overview for clutter reduction usually, but strictly speaking "route" involves them.
+           Let's focus on activities to keep it clean, as originally implemented.
+           Original logic: "if (day.activities.length > 0) ... addMarker(first...)"
+           Let's enhance: Draw the LINE for the day connecting all points.
+        */
+
+        // Collect points
+        if (day.accommodation?.location) dayPoints.push(day.accommodation.location);
+        day.activities.forEach(act => dayPoints.push(act.location));
+
+        // Draw Markers for Key Spots
+        if (day.accommodation?.location) {
+          addMarker(day.accommodation.location, `${day.accommodation.name} (Day ${index + 1} Stay)`, "H", false, color);
         }
+
+        day.activities.forEach((act, actIdx) => {
+          addMarker(act.location, `${act.name} (Day ${index + 1})`, `${actIdx + 1}`, false, color);
+        });
+
+        // Draw Polyline for this day
+        if (dayPoints.length > 1) {
+          const line = new google.maps.Polyline({
+            path: dayPoints,
+            geodesic: true,
+            strokeColor: color, // Day Color
+            strokeOpacity: 0.8,
+            strokeWeight: 4,
+          });
+          line.setMap(map);
+          polylinesRef.current.push(line);
+        }
+
+        // Extend bounds for all points
+        dayPoints.forEach(p => bounds.extend(p));
       });
+
     } else if (activeDay) {
-      // Plot Accommodation if exists
+      // Single Day View (Keep Indigo standard or use day color? Let's use day color for consistency)
+      const index = days.findIndex(d => d.id === selectedDayId);
+      const color = PASTE_COLORS[index % PASTE_COLORS.length];
+      const points: any[] = [];
+
       if (activeDay.accommodation?.location) {
-        const hotelMarker = new google.maps.Marker({
-          position: activeDay.accommodation.location,
-          map,
-          title: activeDay.accommodation.name + " (Stay)",
-          icon: {
-            path: "M2 20h20v-4H2v4zm2-15h4v2H4V5zm0 4h4v2H4V9zm0 4h4v2H4v-2zm6-8h4v2h-4V5zm0 4h4v2h-4V9zm0 4h4v2h-4v-2zm6-8h4v2h-4V5zm0 4h4v2h-4V9zm0 4h4v2h-4v-2zM2 22h20",
-            fillColor: "#0ea5e9",
-            fillOpacity: 1,
-            strokeWeight: 1,
-            strokeColor: "#0369a1",
-            scale: 1,
-            anchor: new google.maps.Point(12, 12)
-          }
-        });
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<div style="padding:4px; color:#333"><strong>${activeDay.accommodation.name}</strong><br/><span style="font-size:10px; color:#666">Start Point</span></div>`
-        });
-        hotelMarker.addListener("click", () => infoWindow.open(map, hotelMarker));
-
-        markersRef.current.push(hotelMarker);
-        bounds.extend(activeDay.accommodation.location);
+        addMarker(activeDay.accommodation.location, activeDay.accommodation.name + " (Stay)", undefined, false, color);
         points.push(activeDay.accommodation.location);
       }
 
-      activeDay.activities.forEach((act, index) => {
-        addMarker(act.location, act.name, `${index + 1}`);
+      activeDay.activities.forEach((act, idx) => {
+        addMarker(act.location, act.name, `${idx + 1}`, false, color);
+        points.push(act.location);
       });
-    }
 
-    if (points.length > 1) {
-      polylineRef.current = new google.maps.Polyline({
-        path: points,
-        geodesic: true,
-        strokeColor: isOverview ? "#ef4444" : "#6366f1",
-        strokeOpacity: 0.8,
-        strokeWeight: 4,
-        icons: isOverview ? undefined : [{
-          icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 3, strokeColor: '#6366f1' },
-          offset: '100%',
-          repeat: '100px'
-        }],
-      });
-      polylineRef.current.setMap(map);
+      if (points.length > 1) {
+        const line = new google.maps.Polyline({
+          path: points,
+          geodesic: true,
+          strokeColor: color,
+          strokeOpacity: 0.8,
+          strokeWeight: 4,
+          icons: [{
+            icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 3, strokeColor: 'white', fillOpacity: 1, fillColor: color },
+            offset: '100%',
+            repeat: '100px'
+          }],
+        });
+        line.setMap(map);
+        polylinesRef.current.push(line);
+      }
     }
 
     if (!bounds.isEmpty()) {
       map.fitBounds(bounds);
-      if (points.length === 1) {
-        map.setZoom(13);
-      }
+      const listener = google.maps.event.addListener(map, "idle", () => {
+        if (map.getZoom() > 14) map.setZoom(14); // Cap max zoom
+        google.maps.event.removeListener(listener);
+      });
     } else if (map) {
       map.setCenter({ lat: 36.2048, lng: 138.2529 });
       map.setZoom(6);
     }
 
-  }, [map, days, selectedDayId, isOverview, activeDay]);
+  }, [map, days, selectedDayId, isOverview, activeDay, visibleDayIds]);
+
+  const toggleDay = (dayId: string) => {
+    setVisibleDayIds(prev => {
+      const next = new Set(prev);
+      if (next.has(dayId)) next.delete(dayId);
+      else next.add(dayId);
+      return next;
+    });
+  };
 
   return (
-    <div ref={mapRef} className="h-full w-full rounded-xl overflow-hidden shadow-inner border border-stone-200 bg-gray-100" />
+    <div className="relative h-full w-full">
+      <div ref={mapRef} className="h-full w-full rounded-xl overflow-hidden shadow-inner border border-stone-200 bg-gray-100" />
+
+      {/* Day Legend Overlay (Only on Overview) */}
+      {isOverview && (
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-xl border border-gray-200 max-h-[80%] overflow-y-auto w-48 z-10">
+          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Toggle Days</h4>
+          <div className="space-y-2">
+            {days.map((day, idx) => (
+              <label key={day.id} className="flex items-center gap-2 text-xs font-medium text-gray-700 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                <input
+                  type="checkbox"
+                  checked={visibleDayIds.has(day.id)}
+                  onChange={() => toggleDay(day.id)}
+                  className="rounded text-indigo-600 focus:ring-indigo-500"
+                />
+                <span
+                  className="w-3 h-3 rounded-full shrink-0"
+                  style={{ backgroundColor: PASTE_COLORS[idx % PASTE_COLORS.length] }}
+                />
+                <span className="truncate">Day {idx + 1}: {day.city}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };

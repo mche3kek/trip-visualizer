@@ -315,65 +315,50 @@ export const searchGooglePlace = async (query: string, fallbackQuery?: string): 
   address?: string;
 } | null> => {
   try {
-    const loader = getLoader();
-    await loader.importLibrary("places");
+    // Call our local proxy server (Relative path handled by Vite Proxy in Dev, or same-origin in Prod)
+    const fetchPlace = async (q: string) => {
+      const response = await fetch(`/api/places/search?query=${encodeURIComponent(q)}`);
+      if (!response.ok) return null;
+      return await response.json();
+    };
 
-    return new Promise((resolve) => {
-      const service = new google.maps.places.PlacesService(document.createElement('div'));
+    let place = await fetchPlace(query);
 
+    // Fallback logic handled by Server or Client? Server has some, but let's keep some client smarts if server returns null.
+    // The server implementation I wrote handles " Japan" retry.
+    // Let's rely on server for the main query.
 
-      // Strategy 1: findPlaceFromQuery (Cheaper, works well for specific names like Hachiko)
-      const requestFind = {
-        query: query,
-        fields: ['name', 'geometry', 'photos', 'place_id', 'formatted_address', 'rating', 'user_ratings_total']
+    // If Primary Query failed, try Fallback if provided
+    if (!place && fallbackQuery) {
+      place = await fetchPlace(fallbackQuery);
+      // If still null, try fallback + Japan
+      if (!place) {
+        place = await fetchPlace(`${fallbackQuery} Japan`);
+      }
+    }
+
+    if (place) {
+      // Construct Photo URL Client-Side using the Reference
+      // https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=...&key=...
+      let photoUrl = undefined;
+      if (place.photoReference) {
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+        photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${place.photoReference}&key=${apiKey}`;
+      }
+
+      return {
+        name: place.name,
+        placeId: place.placeId,
+        location: place.location,
+        photoUrl: photoUrl,
+        rating: place.rating,
+        userRatingsTotal: place.userRatingsTotal,
+        address: place.formatted_address
       };
+    }
 
-      service.findPlaceFromQuery(requestFind, (results: any[], status: any) => {
-        console.log("DEBUG_API_STATUS:", status); // Capture Status
-        if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-          const place = results[0];
-          resolve(formatPlaceResult(place));
-        } else {
-          console.log("DEBUG_API_FALLBACK_TEXT_SEARCH");
-          // Strategy 2: Text Search (Broader fallback)
-          const requestText = {
-            query: query
-          };
-          service.textSearch(requestText, (results: any[], status: any) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-              resolve(formatPlaceResult(results[0]));
-            } else {
-              // Strategy 3: Text Search with "Japan" appended (Hail Mary for ambiguious terms like "Fuji Q")
-              const requestTextJapan = {
-                query: query.includes('Japan') ? query : query + " Japan"
-              };
-              service.textSearch(requestTextJapan, (resultsCheck: any[], statusCheck: any) => {
-                if (statusCheck === google.maps.places.PlacesServiceStatus.OK && resultsCheck && resultsCheck.length > 0) {
-                  resolve(formatPlaceResult(resultsCheck[0]));
-                } else if (fallbackQuery) {
-                  // Strategy 4: Fallback Query (Raw Name) + "Japan"
-                  // This handles cases where "Name + City" fails because the city is wrong or strict
-                  const requestFallback = {
-                    query: fallbackQuery + " Japan"
-                  };
-                  service.textSearch(requestFallback, (resFallback: any[], statFallback: any) => {
-                    if (statFallback === google.maps.places.PlacesServiceStatus.OK && resFallback && resFallback.length > 0) {
-                      resolve(formatPlaceResult(resFallback[0]));
-                    } else {
-                      console.log("No places found for:", query, "or fallback:", fallbackQuery);
-                      resolve(null);
-                    }
-                  });
-                } else {
-                  console.log("No places found for:", query);
-                  resolve(null);
-                }
-              });
-            }
-          });
-        }
-      });
-    });
+    return null;
+
   } catch (e) {
     console.error("Place search error:", e);
     return null;

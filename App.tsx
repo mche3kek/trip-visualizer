@@ -57,7 +57,66 @@ const calculateDayExpenses = (day: DayPlan) => {
 
 export default function App() {
   const [trip, setTrip] = useState<Trip>(INITIAL_TRIP);
-  const [selectedDayId, setSelectedDayId] = useState<string>(trip.days[0].id);
+  const [selectedDayId, setSelectedDayId] = useState<string>('overview');
+
+  // -- PERSISTENCE LOGIC --
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const ignoreNextSave = useRef(true); // Don't save on first render/load
+
+  // 1. Load from Server
+  React.useEffect(() => {
+    const loadTrip = async () => {
+      try {
+        console.log("[App] Fetching trip data...");
+        const res = await fetch('/api/trip');
+        if (res.ok) {
+          const data = await res.json();
+          if (data) {
+            console.log("[App] Trip data loaded:", data);
+            ignoreNextSave.current = true; // Set ignore flag before state update
+            setTrip(data);
+          } else {
+            console.log("[App] No saved data found. Using default.");
+          }
+        }
+      } catch (e) {
+        console.error("[App] Failed to load trip:", e);
+      } finally {
+        setIsDataLoaded(true);
+      }
+    };
+    loadTrip();
+  }, []);
+
+  // 2. Auto-Save
+  React.useEffect(() => {
+    if (!isDataLoaded) return;
+
+    if (ignoreNextSave.current) {
+      console.log("[App] Skipping save (First Load / Update)");
+      ignoreNextSave.current = false;
+      return;
+    }
+
+    console.log("[App] Data changed. Scheduling save...");
+    const timer = setTimeout(async () => {
+      try {
+        console.log("[App] Saving trip to server...");
+        await fetch('/api/trip', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(trip)
+        });
+        console.log("[App] Save complete.");
+      } catch (e) {
+        console.error("[App] Save failed:", e);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [trip, isDataLoaded]);
+
+  // -- END PERSISTENCE --
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.List);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [isAddingAct, setIsAddingAct] = useState(false);
@@ -68,7 +127,6 @@ export default function App() {
   // Filtering State
   const [filterType, setFilterType] = useState<Activity['type'] | 'all'>('all');
 
-  // Drag State
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Recommendation State
@@ -110,34 +168,54 @@ export default function App() {
 
       if (activitiesToUpdate.length === 0) return;
 
-      // don't spam, just process
       console.log(`Found ${activitiesToUpdate.length} activities missing images. Fetching...`);
 
-      for (const item of activitiesToUpdate) {
-        try {
-          // Check if we already have a reliable cached version in localstorage? 
-          // actually searchGooglePlace caches in memory mapService side if we wanted, 
-          // but here we just want to update the State.
-          const place = await searchGooglePlace(`${item.name} ${item.city}`);
-          if (place && place.photoUrl) {
-            setTrip(prev => ({
-              ...prev,
-              days: prev.days.map(d =>
-                d.id === item.dayId
-                  ? {
-                    ...d,
-                    activities: d.activities.map(a =>
-                      a.id === item.actId ? { ...a, imageUrl: place.photoUrl, location: place.location, googlePlaceId: place.placeId } : a
-                    )
-                  }
-                  : d
-              )
-            }));
+      // Fetch all in parallel
+      const results = await Promise.all(
+        activitiesToUpdate.map(async (item) => {
+          try {
+            const place = await searchGooglePlace(`${item.name} ${item.city}`);
+            if (place && place.photoUrl) {
+              return { ...item, place };
+            }
+          } catch (e) {
+            console.error(`Failed to auto-fetch image for ${item.name}`, e);
           }
-        } catch (e) {
-          console.error(`Failed to auto-fetch image for ${item.name}`, e);
-        }
-      }
+          return null;
+        })
+      );
+
+      // Filter out failed fetches
+      const successfulUpdates = results.filter(r => r !== null) as { dayId: string, actId: string, place: any }[];
+
+      if (successfulUpdates.length === 0) return;
+
+      // Apply all updates in ONE transaction
+      setTrip(prev => {
+        const newDays = prev.days.map(day => {
+          // Check if this day has any updates
+          const dayUpdates = successfulUpdates.filter(u => u.dayId === day.id);
+          if (dayUpdates.length === 0) return day;
+
+          // Apply updates to activities
+          const newActivities = day.activities.map(act => {
+            const update = dayUpdates.find(u => u.actId === act.id);
+            if (update) {
+              return {
+                ...act,
+                imageUrl: update.place.photoUrl,
+                location: update.place.location,
+                googlePlaceId: update.place.placeId
+              };
+            }
+            return act;
+          });
+
+          return { ...day, activities: newActivities };
+        });
+
+        return { ...prev, days: newDays };
+      });
     };
 
     // run once after mount (using a timeout to let initial state settle if needed, or just run)
@@ -929,10 +1007,14 @@ export default function App() {
               </button>
               <button
                 onClick={confirmAddActivity}
-                disabled={!newActData.name}
-                className="px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!newActData.name || isAddingAct}
+                className={`px-4 py-2 text-sm font-bold text-white rounded-lg shadow-md transition-all 
+                  ${isAddingAct
+                    ? 'bg-indigo-400 scale-95 cursor-wait'
+                    : 'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-400 active:scale-95 hover:shadow-lg'} 
+                  disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                Add Activity
+                {isAddingAct ? 'Adding...' : 'Add Activity'}
               </button>
             </div>
           </div>
@@ -1264,7 +1346,7 @@ export default function App() {
                       <button
                         onClick={openAddActivityModal}
                         disabled={isAddingAct}
-                        className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-full flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 text-xs font-bold"
+                        className="ml-auto bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-400 active:scale-95 text-white px-4 py-1.5 rounded-full flex items-center shadow-lg transition-transform hover:scale-105 text-xs font-bold"
                       >
                         <Plus className="w-4 h-4 mr-1.5" /> {isAddingAct ? 'Adding...' : 'Add Stop'}
                       </button>
