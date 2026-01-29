@@ -11,11 +11,50 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load env vars from PARENT directory (since we are in /server)
-dotenv.config({ path: path.join(__dirname, '../.env.local') });
+// Load env vars from PARENT directory
+// Try .env first (standard), then .env.local (overrides for local dev if needed, or vice-versa depending on preference. usually local overrides prod)
+dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '../.env.local'), override: true });
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// --- BASIC AUTH MIDDLEWARE ---
+import crypto from 'crypto';
+
+const authUser = process.env.BASIC_AUTH_USER;
+const authHash = process.env.BASIC_AUTH_HASH; // Format: salt:hash
+
+if (authUser && authHash) {
+    console.log("🔒 Basic Auth Enabled (Hashed)");
+    app.use((req, res, next) => {
+        const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+        const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+
+        if (!login || !password || login !== authUser) {
+            res.set('WWW-Authenticate', 'Basic realm="Japan Trip Visualizer"');
+            return res.status(401).send('Authentication required.');
+        }
+
+        const [salt, key] = authHash.split(':');
+
+        // Verify Password
+        crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+            if (err) return next(err);
+
+            // Timing Safe Equality Check
+            if (crypto.timingSafeEqual(Buffer.from(key, 'hex'), derivedKey)) {
+                return next();
+            }
+
+            // Failed
+            res.set('WWW-Authenticate', 'Basic realm="Japan Trip Visualizer"');
+            res.status(401).send('Authentication required.');
+        });
+    });
+} else {
+    console.log("⚠️ No Basic Auth configured. Site is public.");
+}
 
 app.use(cors());
 app.use(express.json());

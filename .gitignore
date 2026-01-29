@@ -44,3 +44,4 @@ pnpm-debug.log*
 # Nix
 result
 result-*
+server/trip_data.json
