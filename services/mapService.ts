@@ -39,34 +39,114 @@ const getDistance = (p1: Coordinates, p2: Coordinates) => {
 };
 
 // Geometric TSP (Nearest Neighbor)
-const solveGeometricTSP = (origin: Coordinates, activities: Activity[]): number[] => {
-  const visited = new Set<number>();
-  const order: number[] = [];
-  let currentPos = origin;
+const timeToMins = (t: string | undefined): number => {
+  if (!t || !t.includes(':')) return 0;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+};
 
-  while (visited.size < activities.length) {
-    let nearestIdx = -1;
-    let minDist = Infinity;
+const solveGeometricTSP = (origin: Coordinates, activities: Activity[], dayStartTime: string = "09:00"): number[] => {
+  const dayStartMins = timeToMins(dayStartTime);
 
-    activities.forEach((act, idx) => {
-      if (!visited.has(idx)) {
-        const dist = getDistance(currentPos, act.location);
-        if (dist < minDist) {
-          minDist = dist;
-          nearestIdx = idx;
-        }
-      }
-    });
-
-    if (nearestIdx !== -1) {
-      visited.add(nearestIdx);
-      order.push(nearestIdx);
-      currentPos = activities[nearestIdx].location;
-    } else {
-      break;
+  // Helper to get minutes relative to day start (handles midnight wrap)
+  const getRelMins = (t: string | undefined) => {
+    if (!t) return 0;
+    let m = timeToMins(t);
+    // If it's earlier than day start (e.g. 02:00 AM when day starts at 09:00 AM),
+    // it belongs to the end of the day.
+    if (m < dayStartMins) {
+      m += 1440;
     }
+    return m;
+  };
+
+  // 1. Identify all activities with their original indices and lock status
+  const anchors = activities
+    .map((act, originalIdx) => ({ act, originalIdx }))
+    .filter(a => a.act.lockedStartTime)
+    .sort((a, b) => getRelMins(a.act.startTime) - getRelMins(b.act.startTime));
+
+  // 2. Create slots between anchors
+  // Slot 0: before first anchor
+  // Slot i: between anchor i-1 and anchor i
+  // Slot N: after last anchor
+  const slots: { anchorIdx: number | null, flexibleIndices: number[] }[] = [];
+
+  // First slot ends at the first anchor
+  slots.push({ anchorIdx: anchors[0]?.originalIdx ?? null, flexibleIndices: [] });
+
+  // Following slots end at subsequent anchors
+  for (let i = 1; i < anchors.length; i++) {
+    slots.push({ anchorIdx: anchors[i].originalIdx, flexibleIndices: [] });
   }
-  return order;
+
+  // Final slot has no ending anchor
+  if (anchors.length > 0) {
+    slots.push({ anchorIdx: null, flexibleIndices: [] });
+  }
+
+  // 3. Assign flexible activities to slots
+  activities.forEach((act, idx) => {
+    if (act.lockedStartTime) return;
+
+    const actTime = getRelMins(act.startTime);
+
+    // Find first anchor that starts AFTER this activity
+    let slotIdx = anchors.findIndex(a => getRelMins(a.act.startTime) > actTime);
+    if (slotIdx === -1) {
+      slotIdx = anchors.length; // Post-last-anchor
+    }
+
+    slots[slotIdx].flexibleIndices.push(idx);
+  });
+
+  // 4. Build the final sequence
+  const finalSequence: number[] = [];
+  let currentLoc = origin;
+
+  slots.forEach(slot => {
+    // Run local TSP for flexible activities in this slot
+    const visitedInSlot = new Set<number>();
+
+    while (visitedInSlot.size < slot.flexibleIndices.length) {
+      let nearestIdx = -1;
+      let minDist = Infinity;
+
+      slot.flexibleIndices.forEach(idx => {
+        if (!visitedInSlot.has(idx)) {
+          const dist = getDistance(currentLoc, activities[idx].location);
+          if (dist < minDist) {
+            minDist = dist;
+            nearestIdx = idx;
+          }
+        }
+      });
+
+      if (nearestIdx !== -1) {
+        visitedInSlot.add(nearestIdx);
+        finalSequence.push(nearestIdx);
+        currentLoc = activities[nearestIdx].location;
+      }
+    }
+
+    // Add the anchor that ends this slot
+    if (slot.anchorIdx !== null) {
+      finalSequence.push(slot.anchorIdx);
+      currentLoc = activities[slot.anchorIdx].location;
+    }
+  });
+
+  return finalSequence;
+};
+
+const getActivityDuration = (act: Activity): number => {
+  if (act.lockedDurationMinutes) return act.lockedDurationMinutes;
+  const start = timeToMins(act.startTime);
+  const end = timeToMins(act.endTime);
+  let diff = end - start;
+  // Handle overnight activities
+  if (diff < 0) diff += 1440;
+  return diff > 0 ? diff : 60; // Default 1h if zero
 };
 
 export const geocodeLocation = async (address: string): Promise<Coordinates | null> => {
@@ -90,7 +170,8 @@ export const geocodeLocation = async (address: string): Promise<Coordinates | nu
 export const calculateFastestRoute = async (
   origin: Coordinates,
   activities: Activity[],
-  returnToOrigin: boolean = true
+  returnToOrigin: boolean = true,
+  dayStartTime: string = '09:00'
 ): Promise<{ order: number[], totalDuration: string, durationValue: number, segments: TravelSegment[] } | null> => {
   if (activities.length === 0) return null;
 
@@ -100,18 +181,20 @@ export const calculateFastestRoute = async (
 
     const directionsService = new google.maps.DirectionsService();
 
-    // 1. Solve Order Geometrically (TSP) to minimize queries and distance
-    const tspOrder = solveGeometricTSP(origin, activities);
+    // 1. Solve Order with Anchor Awareness & Chronology
+    const tspOrder = solveGeometricTSP(origin, activities, dayStartTime);
 
-    // Reorder activities based on TSP
+    // Reorder activities based on the constrained TSP
     const orderedActivities = tspOrder.map(i => activities[i]);
 
-    // 2. Prepare for API Calls
-    // FIXED TIME: Tomorrow 10:00 AM JST as requested for representative public transport times
+    // 2. Prepare for API Calls (Transit check for representative time)
     const now = new Date();
     const departureTime = new Date(now);
     departureTime.setDate(departureTime.getDate() + 1);
-    departureTime.setHours(10, 0, 0, 0); // Strict 10:00 AM
+
+    // Use the user's dayStartTime for more accurate transit predictions
+    const [startH, startM] = dayStartTime.split(':').map(Number);
+    departureTime.setHours(startH || 10, startM || 0, 0, 0);
 
     let totalSeconds = 0;
     const segments: TravelSegment[] = [];
@@ -259,6 +342,11 @@ export const calculateFastestRoute = async (
       if (selectedSegment) {
         totalSeconds += selectedSegment.durationValue;
         departureTime.setSeconds(departureTime.getSeconds() + selectedSegment.durationValue);
+
+        // Add activity stay duration for the next leg's departure time
+        const stayMins = getActivityDuration(targetAct);
+        departureTime.setMinutes(departureTime.getMinutes() + stayMins);
+
         segments.push(selectedSegment);
       } else {
         segments.push({

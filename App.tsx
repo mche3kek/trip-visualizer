@@ -6,7 +6,7 @@ import { ActivityCard } from './components/ActivityCard';
 import { MapView } from './components/MapView';
 import { StatsView } from './components/StatsView';
 import { PrintLayout } from './components/PrintLayout';
-import { Map, BarChart3, Plus, Plane, ChevronRight, Globe, List, ArrowDownAZ, BedDouble, Zap, Map as MapIcon, Trash2, Edit3, Sparkles, StickyNote, X, Filter, Clock, Footprints, Train, Car, Bus, Image as ImageIcon, ExternalLink, Wallet, Calendar, Printer, Eye, FileText, Upload } from 'lucide-react';
+import { Map, BarChart3, Plus, Plane, ChevronRight, Globe, List, ArrowDownAZ, BedDouble, Zap, Map as MapIcon, Trash2, Edit3, Sparkles, StickyNote, X, Filter, Clock, Footprints, Train, Car, Bus, Image as ImageIcon, ExternalLink, Wallet, Calendar, Printer, Eye, FileText, Upload, Lock as LockIcon } from 'lucide-react';
 import { findActivityImage, generateItinerary, getItinerarySuggestions, getRecommendedDuration, getActivityPricing } from './services/geminiService';
 import { geocodeLocation, calculateFastestRoute, searchGooglePlace } from './services/mapService';
 import { WeatherWidget } from './components/WeatherWidget';
@@ -528,7 +528,7 @@ export default function App() {
         return;
       }
 
-      const result = await calculateFastestRoute(startLocation, activeDay.activities);
+      const result = await calculateFastestRoute(startLocation, activeDay.activities, true, activeDay.startTime || "09:00");
 
       if (result) {
         setTrip(prev => {
@@ -740,13 +740,13 @@ export default function App() {
       id: `new-${Date.now()}`,
       name: finalName,
       description: 'Planned stop',
-      startTime: '09:00', // Placeholder, will be autoscheduled
-      endTime: '10:00',   // Placeholder duration (1h)
+      startTime: newActData.startTime, // Use user provided time
+      endTime: newActData.endTime,     // Use user provided time
       location: location,
       type: newActData.type,
       imageUrl: photoUrl,
       googlePlaceId: placeId,
-      lockedStartTime: false // Default to unlocked
+      lockedStartTime: true // Lock it because the user set it manually in the modal
     };
 
     // 2.5 Get Smart Duration (if we have a place)
@@ -756,11 +756,26 @@ export default function App() {
         console.log("AI Duration Rec:", durationRec);
         newActivity.durationReasoning = durationRec.reasoning;
 
-        const addMins = durationRec.durationMinutes;
-
-        // Update End Time
+        // Only override end time with AI recommendation if user left it at default 10:00-12:00
+        if (newActData.startTime === '10:00' && newActData.endTime === '12:00') {
+          const addMins = durationRec.durationMinutes;
+          const startM = timeToMins(newActData.startTime);
+          newActivity.endTime = minsToTime(startM + addMins);
+        } else {
+          // User set a manual time, so lock the duration they chose
+          const startM = timeToMins(newActData.startTime);
+          const endM = timeToMins(newActData.endTime);
+          if (endM > startM) {
+            newActivity.lockedDurationMinutes = endM - startM;
+          }
+        }
+      } else if (newActData.startTime !== '10:00' || newActData.endTime !== '12:00') {
+        // No AI rec, but user changed times, lock them
         const startM = timeToMins(newActData.startTime);
-        newActivity.endTime = minsToTime(startM + addMins);
+        const endM = timeToMins(newActData.endTime);
+        if (endM > startM) {
+          newActivity.lockedDurationMinutes = endM - startM;
+        }
       }
     } catch (e) {
       console.warn("Smart Duration failed", e);
@@ -1099,17 +1114,30 @@ export default function App() {
                   </select>
                 </div>
 
-                {/* Time Input Removed - Auto-Scheduled by Smart Engine */}
-                {/* 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Time</label>
-                  ...
-                </div> 
-                */}
-                <div className="flex items-center gap-2 mt-6 p-3 bg-indigo-50 rounded-lg text-xs text-indigo-700">
-                  <Clock className="w-4 h-4" />
-                  <span>Time will be auto-scheduled based on your route. You can lock it later.</span>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Start Time</label>
+                    <input
+                      type="time"
+                      value={newActData.startTime}
+                      onChange={(e) => setNewActData({ ...newActData, startTime: e.target.value })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">End Time</label>
+                    <input
+                      type="time"
+                      value={newActData.endTime}
+                      onChange={(e) => setNewActData({ ...newActData, endTime: e.target.value })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none"
+                    />
+                  </div>
                 </div>
+              </div>
+              <div className="flex items-center gap-2 p-3 bg-amber-50 rounded-lg text-[10px] text-amber-700 border border-amber-100">
+                <LockIcon className="w-3.5 h-3.5" />
+                <span>Manual times will be <strong>locked</strong> and won't move during optimization.</span>
               </div>
             </div>
 

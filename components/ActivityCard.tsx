@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Activity } from '../types';
-import { Clock, MapPin, Sparkles, Trash2, ArrowUp, ArrowDown, Edit2, Save, Link as LinkIcon, Image as ImageIcon, Wand2, GripVertical, ListChecks, HelpCircle, ChevronDown, ChevronUp, RefreshCw, Split, Lock, Unlock, Timer, Wallet } from 'lucide-react';
+import { Clock, MapPin, Sparkles, Trash2, ArrowUp, ArrowDown, Edit2, Save, Link as LinkIcon, Image as ImageIcon, Wand2, GripVertical, ListChecks, HelpCircle, ChevronDown, ChevronUp, RefreshCw, Split, Lock as LockIcon, Unlock, Timer, Wallet } from 'lucide-react';
 import { getTravelRecommendation, generateSubActivities, analyzePlaceName } from '../services/geminiService';
 import { searchGooglePlace } from '../services/mapService';
 import { PriceDetailPopup } from './PriceDetailPopup';
@@ -220,7 +220,29 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
   };
 
   const saveChanges = () => {
-    onUpdate(editedActivity);
+    const timeToMins = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+
+    let finalActivity = { ...editedActivity };
+
+    // If start time was manually changed, lock it
+    if (editedActivity.startTime !== activity.startTime) {
+      finalActivity.lockedStartTime = true;
+    }
+
+    // If end time was manually changed, calculate duration and lock it
+    if (editedActivity.endTime !== activity.endTime) {
+      const start = timeToMins(editedActivity.startTime);
+      const end = timeToMins(editedActivity.endTime);
+      const diff = end - start;
+      if (diff > 0) {
+        finalActivity.lockedDurationMinutes = diff;
+      }
+    }
+
+    onUpdate(finalActivity);
     setIsEditing(false);
   };
 
@@ -444,7 +466,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
               className={`flex items-center px-2.5 py-1 rounded-md transition-colors relative ${activity.lockedStartTime ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
               title={activity.lockedStartTime ? "Start Time Locked (Anchor)" : "Start Time Unlocked (Auto-Flows)"}
             >
-              {activity.lockedStartTime ? <Lock className="w-3.5 h-3.5 mr-1.5" /> : <Unlock className="w-3.5 h-3.5 mr-1.5 opacity-50" />}
+              {activity.lockedStartTime ? <LockIcon className="w-3.5 h-3.5 mr-1.5" /> : <Unlock className="w-3.5 h-3.5 mr-1.5 opacity-50" />}
               {activity.startTime} - {activity.endTime}
               {activity.lockedStartTime && <span className="ml-1.5 text-[10px] font-bold uppercase tracking-wider">Locked</span>}
             </button>
