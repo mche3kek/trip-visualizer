@@ -6,6 +6,8 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 // Convert import.meta.url to __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -17,6 +19,14 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 dotenv.config({ path: path.join(__dirname, '../.env.local'), override: true });
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*", // In production, specify your domain
+        methods: ["GET", "POST"]
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 
 // --- BASIC AUTH MIDDLEWARE ---
@@ -175,6 +185,11 @@ app.post('/api/trip', async (req, res) => {
         if (!tripData) return res.status(400).json({ error: 'No data provided' });
 
         await fs.writeFile(DATA_FILE, JSON.stringify(tripData, null, 2));
+
+        // Broadcast update to all connected clients except the sender
+        const socketId = req.headers['x-socket-id'];
+        io.emit('trip-updated', { data: tripData, sourceSocketId: socketId });
+
         res.json({ success: true });
     } catch (error) {
         console.error("Write Error:", error);
@@ -273,6 +288,26 @@ app.get(/.*/, (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
+// --- WEBSOCKET HANDLERS ---
+io.on('connection', (socket) => {
+    console.log(`🔌 Client connected: ${socket.id}`);
+
+    socket.on('disconnect', () => {
+        console.log(`🔌 Client disconnected: ${socket.id}`);
+    });
+
+    // Optional: Handle manual sync requests
+    socket.on('request-sync', async () => {
+        try {
+            const data = await fs.readFile(DATA_FILE, 'utf-8');
+            socket.emit('trip-updated', { data: JSON.parse(data), sourceSocketId: socket.id });
+        } catch (error) {
+            console.error('Sync request failed:', error);
+        }
+    });
+});
+
+httpServer.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`🔌 WebSocket server ready for real-time sync`);
 });

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Trip, DayPlan, Activity, ViewMode, TravelSegment, PdfAttachment } from './types';
 import { INITIAL_TRIP } from './constants';
@@ -13,6 +13,7 @@ import { WeatherWidget } from './components/WeatherWidget';
 import { EventSuggestions } from './components/EventSuggestions';
 import { LocalEvent } from './types';
 import ReactMarkdown from 'react-markdown';
+import { useRealtimeSync } from './hooks/useRealtimeSync';
 
 declare var google: any;
 
@@ -89,7 +90,16 @@ export default function App() {
     loadTrip();
   }, []);
 
-  // 2. Auto-Save
+  // -- REAL-TIME SYNC --
+  const { isConnected, socketId } = useRealtimeSync({
+    onTripUpdate: (newTrip) => {
+      console.log("[Sync] Applying remote update");
+      ignoreNextSave.current = true;
+      setTrip(newTrip);
+    }
+  });
+
+  // 2. Auto-Save with Socket ID
   React.useEffect(() => {
     if (!isDataLoaded) return;
 
@@ -103,9 +113,12 @@ export default function App() {
     const timer = setTimeout(async () => {
       try {
         console.log("[App] Saving trip to server...");
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (socketId) headers['x-socket-id'] = socketId;
+
         await fetch('/api/trip', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(trip)
         });
         console.log("[App] Save complete.");
@@ -115,7 +128,7 @@ export default function App() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [trip, isDataLoaded]);
+  }, [trip, isDataLoaded, socketId]);
 
   // -- END PERSISTENCE --
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.List);
@@ -1180,7 +1193,13 @@ export default function App() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900 tracking-tight">{trip.title}</h1>
-            <p className="text-xs text-gray-500">{trip.days.length} Days • {trip.days[0]?.city} start</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-gray-500">{trip.days.length} Days • {trip.days[0]?.city} start</p>
+              <div className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase transition-all duration-500 ${isConnected ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border border-rose-500/20 animate-pulse'}`}>
+                <div className={`w-1 h-1 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                {isConnected ? 'Live' : 'Offline'}
+              </div>
+            </div>
           </div>
         </div>
 
