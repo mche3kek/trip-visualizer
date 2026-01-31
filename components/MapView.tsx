@@ -10,7 +10,7 @@ interface MapViewProps {
   focusedActivityId?: string | null;
 }
 
-export const MapView: React.FC<MapViewProps> = ({ days, selectedDayId, focusedActivityId }) => {
+export const MapView: React.FC<MapViewProps> = React.memo(({ days, selectedDayId, focusedActivityId }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<any | null>(null);
@@ -233,4 +233,42 @@ export const MapView: React.FC<MapViewProps> = ({ days, selectedDayId, focusedAc
       )}
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison function - only re-render if map-relevant data changes
+  // Ignore changes to notes field
+  if (prevProps.selectedDayId !== nextProps.selectedDayId) return false;
+  if (prevProps.focusedActivityId !== nextProps.focusedActivityId) return false;
+
+  // Deep compare only map-relevant fields from days
+  if (prevProps.days.length !== nextProps.days.length) return false;
+
+  for (let i = 0; i < prevProps.days.length; i++) {
+    const prevDay = prevProps.days[i];
+    const nextDay = nextProps.days[i];
+
+    // Check day metadata
+    if (prevDay.id !== nextDay.id) return false;
+    if (prevDay.city !== nextDay.city) return false;
+    if (prevDay.date !== nextDay.date) return false;
+
+    // Check accommodation
+    if (JSON.stringify(prevDay.accommodation) !== JSON.stringify(nextDay.accommodation)) return false;
+
+    // Check activities (but not notes or other non-map fields)
+    if (prevDay.activities.length !== nextDay.activities.length) return false;
+
+    for (let j = 0; j < prevDay.activities.length; j++) {
+      const prevAct = prevDay.activities[j];
+      const nextAct = nextDay.activities[j];
+
+      if (prevAct.id !== nextAct.id) return false;
+      if (prevAct.name !== nextAct.name) return false;
+      if (JSON.stringify(prevAct.location) !== JSON.stringify(nextAct.location)) return false;
+    }
+
+    // Check travel segments
+    if (JSON.stringify(prevDay.travelSegments) !== JSON.stringify(nextDay.travelSegments)) return false;
+  }
+
+  return true; // Props are equal, don't re-render
+});

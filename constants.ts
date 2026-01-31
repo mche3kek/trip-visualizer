@@ -1,11 +1,11 @@
 import { Trip, DayPlan } from './types';
 
 export const INITIAL_TRIP: Trip = {
-  title: "Japan Adventure 2025",
+  title: "Japan Adventure 2026",
   days: [
     {
       id: 'day-1',
-      date: '2025-02-03',
+      date: '2026-02-03',
       city: 'Tokyo',
       startTime: '10:00',
       activities: [
@@ -43,7 +43,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-2',
-      date: '2025-02-04',
+      date: '2026-02-04',
       city: 'Tokyo',
       startTime: '09:00',
       activities: [
@@ -91,7 +91,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-3',
-      date: '2025-02-05',
+      date: '2026-02-05',
       city: 'Tokyo',
       startTime: '08:00',
       activities: [
@@ -109,7 +109,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-4',
-      date: '2025-02-06',
+      date: '2026-02-06',
       city: 'Tokyo',
       startTime: '10:00',
       activities: [
@@ -137,7 +137,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-5',
-      date: '2025-02-08',
+      date: '2026-02-08',
       city: 'Nagano',
       startTime: '09:00',
       activities: [
@@ -155,7 +155,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-6',
-      date: '2025-02-09',
+      date: '2026-02-09',
       city: 'Nagano',
       startTime: '09:00',
       activities: [
@@ -173,7 +173,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-7',
-      date: '2025-02-10',
+      date: '2026-02-10',
       city: 'Kanazawa',
       startTime: '10:00',
       activities: [
@@ -191,7 +191,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-8',
-      date: '2025-02-12',
+      date: '2026-02-12',
       city: 'Osaka',
       startTime: '08:30',
       activities: [
@@ -209,7 +209,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-9',
-      date: '2025-02-13',
+      date: '2026-02-13',
       city: 'Nara & Osaka',
       startTime: '09:00',
       activities: [
@@ -237,7 +237,7 @@ export const INITIAL_TRIP: Trip = {
     },
     {
       id: 'day-10',
-      date: '2025-02-14',
+      date: '2026-02-14',
       city: 'Kyoto',
       startTime: '08:00',
       activities: [

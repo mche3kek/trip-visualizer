@@ -6,12 +6,13 @@ import { ActivityCard } from './components/ActivityCard';
 import { MapView } from './components/MapView';
 import { StatsView } from './components/StatsView';
 import { PrintLayout } from './components/PrintLayout';
-import { Map, BarChart3, Plus, Plane, ChevronRight, Globe, List, ArrowDownAZ, BedDouble, Zap, Map as MapIcon, Trash2, Edit3, Sparkles, StickyNote, X, Filter, Clock, Footprints, Train, Car, Bus, Image as ImageIcon, ExternalLink, Wallet, Calendar, Printer } from 'lucide-react';
+import { Map, BarChart3, Plus, Plane, ChevronRight, Globe, List, ArrowDownAZ, BedDouble, Zap, Map as MapIcon, Trash2, Edit3, Sparkles, StickyNote, X, Filter, Clock, Footprints, Train, Car, Bus, Image as ImageIcon, ExternalLink, Wallet, Calendar, Printer, Eye } from 'lucide-react';
 import { findActivityImage, generateItinerary, getItinerarySuggestions, getRecommendedDuration, getActivityPricing } from './services/geminiService';
 import { geocodeLocation, calculateFastestRoute, searchGooglePlace } from './services/mapService';
 import { WeatherWidget } from './components/WeatherWidget';
 import { EventSuggestions } from './components/EventSuggestions';
 import { LocalEvent } from './types';
+import ReactMarkdown from 'react-markdown';
 
 declare var google: any;
 
@@ -140,6 +141,9 @@ export default function App() {
   const [newActData, setNewActData] = useState<{ name: string, type: Activity['type'], startTime: string, endTime: string }>({
     name: '', type: 'sightseeing', startTime: '10:00', endTime: '12:00'
   });
+
+  // Notes Preview State
+  const [notesPreviewMode, setNotesPreviewMode] = useState(false);
 
   // Print Handling
   const printRef = useRef<HTMLDivElement>(null);
@@ -1223,8 +1227,8 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Hotel & Notes Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    {/* Hotel Section */}
+                    <div className="mb-6">
                       {/* Hotel */}
                       <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col">
                         <div className="flex justify-between mb-1">
@@ -1248,20 +1252,6 @@ export default function App() {
                           value={activeDay.accommodation?.name || ''}
                           onChange={(e) => handleUpdateHotel(activeDay.id, e.target.value)}
                           className="w-full text-gray-700 placeholder-gray-300 focus:outline-none font-medium bg-transparent text-sm"
-                        />
-                      </div>
-
-                      {/* Notes */}
-                      <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col h-full">
-                        <div className="flex items-center text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                          <StickyNote className="w-3.5 h-3.5 mr-1.5" /> Day Notes
-                        </div>
-                        <textarea
-                          placeholder="Reminders, tickets..."
-                          value={activeDay.notes || ''}
-                          onChange={(e) => handleUpdateNotes(activeDay.id, e.target.value)}
-                          className="w-full text-gray-600 placeholder-gray-300 focus:outline-none text-sm bg-transparent resize-none h-full"
-                          rows={1}
                         />
                       </div>
                     </div>
@@ -1534,6 +1524,78 @@ export default function App() {
                         );
                       })
                       }
+                    </div>
+
+                    {/* NOTES SECTION */}
+                    <div className="border-t border-gray-200 pt-6 pb-6">
+                      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 px-4 py-3 border-b border-amber-100 flex items-center justify-between">
+                          <div className="flex items-center">
+                            <StickyNote className="w-5 h-5 mr-2 text-amber-600" />
+                            <h3 className="text-base font-bold text-gray-800">Day Notes</h3>
+                          </div>
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <span className="text-xs text-amber-600 font-medium">
+                              {notesPreviewMode ? 'Preview' : 'Edit'}
+                            </span>
+                            <div className="relative">
+                              <input
+                                type="checkbox"
+                                checked={notesPreviewMode}
+                                onChange={(e) => setNotesPreviewMode(e.target.checked)}
+                                className="sr-only peer"
+                              />
+                              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                            </div>
+                            <Eye className="w-4 h-4 text-amber-600" />
+                          </label>
+                        </div>
+                        <div className="p-4">
+                          {!notesPreviewMode ? (
+                            /* Edit Mode */
+                            <textarea
+                              placeholder="**Add notes here...** You can use markdown formatting:\n\n- Bullet points\n- **Bold text**\n- *Italic text*\n- [Links](https://example.com)\n\nGreat for:\n• Reservation numbers\n• Important reminders\n• Transportation details\n• Restaurant bookings"
+                              value={activeDay.notes || ''}
+                              onChange={(e) => handleUpdateNotes(activeDay.id, e.target.value)}
+                              className="w-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-200 text-sm bg-gray-50 border border-gray-200 rounded-lg p-3 resize-none font-mono"
+                              rows={6}
+                            />
+                          ) : (
+                            /* Preview Mode */
+                            <div className="min-h-[150px]">
+                              {activeDay.notes && activeDay.notes.trim() ? (
+                                <div className="prose prose-sm max-w-none bg-white p-4 rounded-lg border border-gray-100">
+                                  <ReactMarkdown
+                                    components={{
+                                      // Style markdown elements
+                                      h1: ({ node, ...props }) => <h1 className="text-xl font-bold mb-2 text-gray-900" {...props} />,
+                                      h2: ({ node, ...props }) => <h2 className="text-lg font-bold mb-2 text-gray-800" {...props} />,
+                                      h3: ({ node, ...props }) => <h3 className="text-base font-bold mb-1 text-gray-800" {...props} />,
+                                      p: ({ node, ...props }) => <p className="mb-2 text-gray-700" {...props} />,
+                                      ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-2 text-gray-700" {...props} />,
+                                      ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-2 text-gray-700" {...props} />,
+                                      li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                                      a: ({ node, ...props }) => <a className="text-indigo-600 hover:text-indigo-700 underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                                      strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
+                                      em: ({ node, ...props }) => <em className="italic" {...props} />,
+                                      code: ({ node, ...props }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />,
+                                    }}
+                                  >
+                                    {activeDay.notes}
+                                  </ReactMarkdown>
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-center h-[150px] text-gray-400 text-sm">
+                                  <div className="text-center">
+                                    <StickyNote className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                                    <p>No notes yet. Switch to edit mode to add some.</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     {/* AI RECOMMENDATIONS BUTTON (Bottom access) */}
