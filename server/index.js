@@ -182,6 +182,85 @@ app.post('/api/trip', async (req, res) => {
     }
 });
 
+// --- FILE UPLOAD HANDLING ---
+import multer from 'multer';
+
+// Create uploads directory if it doesn't exist
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
+fs.mkdir(UPLOADS_DIR, { recursive: true }).catch(console.error);
+
+// Configure multer for file storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, UPLOADS_DIR);
+    },
+    filename: (req, file, cb) => {
+        // Create unique filename: timestamp-originalname
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        const baseName = path.basename(file.originalname, ext);
+        cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        // Only accept PDFs
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PDF files are allowed'));
+        }
+    }
+});
+
+// Upload PDF endpoint
+app.post('/api/upload', upload.single('pdf'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        // Return file info
+        res.json({
+            id: req.file.filename,
+            fileName: req.file.originalname,
+            filePath: `/api/attachments/${req.file.filename}`,
+            size: req.file.size,
+            uploadedAt: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ error: 'Upload failed' });
+    }
+});
+
+// Serve uploaded PDFs
+app.get('/api/attachments/:filename', (req, res) => {
+    const filePath = path.join(UPLOADS_DIR, req.params.filename);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            res.status(404).json({ error: 'File not found' });
+        }
+    });
+});
+
+// Delete PDF endpoint
+app.delete('/api/attachments/:id', async (req, res) => {
+    try {
+        const filePath = path.join(UPLOADS_DIR, req.params.id);
+        await fs.unlink(filePath);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Delete error:', error);
+        res.status(500).json({ error: 'Failed to delete file' });
+    }
+});
+
 // --- SERVE STATIC FILES (Production) ---
 const distPath = path.join(__dirname, '../dist');
 app.use(express.static(distPath));

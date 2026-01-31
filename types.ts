@@ -52,6 +52,14 @@ export interface TravelSegment {
   alternativeLabel?: string;
 }
 
+export interface PdfAttachment {
+  id: string;
+  fileName: string; // Original uploaded filename
+  displayName: string; // User-customized display name
+  uploadedAt: string; // ISO timestamp
+  filePath: string; // Server path or URL to the PDF
+}
+
 export interface DayPlan {
   id: string;
   date: string; // YYYY-MM-DD
@@ -64,6 +72,7 @@ export interface DayPlan {
   activities: Activity[];
   travelSegments?: TravelSegment[];
   notes?: string;
+  attachments?: PdfAttachment[]; // PDF uploads for this day
 }
 
 export interface Trip {

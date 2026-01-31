@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { Trip, DayPlan, Activity, ViewMode, TravelSegment } from './types';
+import { Trip, DayPlan, Activity, ViewMode, TravelSegment, PdfAttachment } from './types';
 import { INITIAL_TRIP } from './constants';
 import { ActivityCard } from './components/ActivityCard';
 import { MapView } from './components/MapView';
 import { StatsView } from './components/StatsView';
 import { PrintLayout } from './components/PrintLayout';
-import { Map, BarChart3, Plus, Plane, ChevronRight, Globe, List, ArrowDownAZ, BedDouble, Zap, Map as MapIcon, Trash2, Edit3, Sparkles, StickyNote, X, Filter, Clock, Footprints, Train, Car, Bus, Image as ImageIcon, ExternalLink, Wallet, Calendar, Printer, Eye } from 'lucide-react';
+import { Map, BarChart3, Plus, Plane, ChevronRight, Globe, List, ArrowDownAZ, BedDouble, Zap, Map as MapIcon, Trash2, Edit3, Sparkles, StickyNote, X, Filter, Clock, Footprints, Train, Car, Bus, Image as ImageIcon, ExternalLink, Wallet, Calendar, Printer, Eye, FileText, Upload } from 'lucide-react';
 import { findActivityImage, generateItinerary, getItinerarySuggestions, getRecommendedDuration, getActivityPricing } from './services/geminiService';
 import { geocodeLocation, calculateFastestRoute, searchGooglePlace } from './services/mapService';
 import { WeatherWidget } from './components/WeatherWidget';
@@ -144,6 +144,12 @@ export default function App() {
 
   // Notes Preview State
   const [notesPreviewMode, setNotesPreviewMode] = useState(false);
+
+  // PDF Upload State
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
+  const [tempPdfData, setTempPdfData] = useState<{ dayId: string, fileData: any } | null>(null);
+  const [customPdfName, setCustomPdfName] = useState('');
 
   // Print Handling
   const printRef = useRef<HTMLDivElement>(null);
@@ -921,6 +927,98 @@ export default function App() {
     }));
   };
 
+  // PDF Upload Handlers
+  const handlePdfUpload = async (dayId: string, file: File) => {
+    setUploadingPdf(true);
+    try {
+      const formData = new FormData();
+      formData.append('pdf', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+
+      const fileData = await response.json();
+
+      // Show rename modal
+      setTempPdfData({ dayId, fileData });
+      setCustomPdfName(fileData.fileName.replace('.pdf', ''));
+      setRenameModalOpen(true);
+    } catch (error) {
+      console.error('PDF upload error:', error);
+      alert('Failed to upload PDF. Please try again.');
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
+  const confirmPdfUpload = () => {
+    if (!tempPdfData) return;
+
+    const { dayId, fileData } = tempPdfData;
+    const attachment: PdfAttachment = {
+      id: fileData.id,
+      fileName: fileData.fileName,
+      displayName: customPdfName || fileData.fileName,
+      uploadedAt: fileData.uploadedAt,
+      filePath: fileData.filePath
+    };
+
+    setTrip(prev => ({
+      ...prev,
+      days: prev.days.map(day =>
+        day.id === dayId
+          ? { ...day, attachments: [...(day.attachments || []), attachment] }
+          : day
+      )
+    }));
+
+    setRenameModalOpen(false);
+    setTempPdfData(null);
+    setCustomPdfName('');
+  };
+
+  const handleRenamePdf = (dayId: string, attachmentId: string, newName: string) => {
+    setTrip(prev => ({
+      ...prev,
+      days: prev.days.map(day =>
+        day.id === dayId
+          ? {
+            ...day,
+            attachments: day.attachments?.map(att =>
+              att.id === attachmentId ? { ...att, displayName: newName } : att
+            )
+          }
+          : day
+      )
+    }));
+  };
+
+  const handleDeletePdf = async (dayId: string, attachmentId: string) => {
+    if (!confirm('Delete this PDF?')) return;
+
+    try {
+      // Delete from server
+      await fetch(`/api/attachments/${attachmentId}`, { method: 'DELETE' });
+
+      // Remove from state
+      setTrip(prev => ({
+        ...prev,
+        days: prev.days.map(day =>
+          day.id === dayId
+            ? { ...day, attachments: day.attachments?.filter(att => att.id !== attachmentId) }
+            : day
+        )
+      }));
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete PDF');
+    }
+  };
+
   const handleOpenGoogleMaps = () => {
     if (!activeDay) return;
     let url = "https://www.google.com/maps/dir/";
@@ -1019,6 +1117,55 @@ export default function App() {
                   disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {isAddingAct ? 'Adding...' : 'Add Activity'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PDF RENAME MODAL */}
+      {renameModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-gray-800">Name Your PDF</h3>
+              <button onClick={() => setRenameModalOpen(false)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Display Name</label>
+                <input
+                  autoFocus
+                  type="text"
+                  value={customPdfName}
+                  onChange={(e) => setCustomPdfName(e.target.value)}
+                  placeholder="e.g. Hotel Reservation"
+                  className="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-indigo-600 focus:outline-none py-1 placeholder-gray-300"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') confirmPdfUpload();
+                    if (e.key === 'Escape') setRenameModalOpen(false);
+                  }}
+                />
+                <p className="text-xs text-gray-500 mt-2">Original: {tempPdfData?.fileData.fileName}</p>
+              </div>
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 flex justify-end gap-2">
+              <button
+                onClick={() => setRenameModalOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmPdfUpload}
+                disabled={!customPdfName.trim()}
+                className="px-4 py-2 text-sm font-bold text-white rounded-lg shadow-md transition-all bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-400 active:scale-95 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Save PDF
               </button>
             </div>
           </div>
@@ -1154,6 +1301,74 @@ export default function App() {
                   >
                     View Full Map
                   </button>
+
+                  {/* All PDFs Section */}
+                  <div className="mt-12 pt-8 border-t border-gray-200">
+                    <div className="flex items-center justify-center gap-2 mb-6">
+                      <FileText className="w-6 h-6 text-blue-600" />
+                      <h3 className="text-xl font-bold text-gray-800">All PDF Attachments</h3>
+                    </div>
+                    {(() => {
+                      const allPdfs = trip.days.flatMap(day =>
+                        (day.attachments || []).map(pdf => ({
+                          ...pdf,
+                          dayId: day.id,
+                          dayCity: day.city,
+                          dayDate: day.date
+                        }))
+                      );
+
+                      if (allPdfs.length === 0) {
+                        return (
+                          <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                            <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500">No PDFs uploaded yet</p>
+                            <p className="text-xs text-gray-400 mt-1">Upload PDFs in each day's page</p>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {allPdfs.map((pdf) => (
+                            <div key={`${pdf.dayId}-${pdf.id}`} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                              <div className="flex items-start gap-3">
+                                <div className="w-12 h-12 bg-red-100 rounded flex items-center justify-center shrink-0">
+                                  <FileText className="w-6 h-6 text-red-600" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-gray-800 truncate">{pdf.displayName}</p>
+                                  <p className="text-sm text-indigo-600 mt-1">
+                                    {pdf.dayCity} • {new Date(pdf.dayDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                  </p>
+                                  <p className="text-xs text-gray-400 mt-1">
+                                    Uploaded {new Date(pdf.uploadedAt).toLocaleDateString()}
+                                  </p>
+                                  <div className="mt-3 flex gap-2">
+                                    <a
+                                      href={pdf.filePath}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors inline-flex items-center gap-1"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                      View
+                                    </a>
+                                    <button
+                                      onClick={() => setSelectedDayId(pdf.dayId)}
+                                      className="text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                                    >
+                                      Go to Day
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
               </div>
             ) : (activeDay && (
@@ -1592,6 +1807,97 @@ export default function App() {
                                   </div>
                                 </div>
                               )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* PDF ATTACHMENTS SECTION */}
+                    <div className="border-t border-gray-200 pt-6 pb-6">
+                      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b border-blue-100 flex items-center justify-between">
+                          <div className="flex items-center">
+                            <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                            <h3 className="text-base font-bold text-gray-800">PDF Attachments</h3>
+                          </div>
+                          <span className="text-xs text-blue-600 font-medium bg-blue-100 px-2 py-1 rounded">
+                            {activeDay.attachments?.length || 0} file(s)
+                          </span>
+                        </div>
+                        <div className="p-4">
+                          {/* Upload Area */}
+                          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors group">
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                              <Upload className="w-8 h-8 mb-2 text-gray-400 group-hover:text-indigo-500 transition-colors" />
+                              <p className="mb-1 text-sm text-gray-500">
+                                <span className="font-semibold">Click to upload</span> or drag and drop
+                              </p>
+                              <p className="text-xs text-gray-400">PDF files only (max 10MB)</p>
+                            </div>
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept=".pdf"
+                              disabled={uploadingPdf}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  handlePdfUpload(activeDay.id, file);
+                                  e.target.value = ''; // Reset input
+                                }
+                              }}
+                            />
+                          </label>
+
+                          {/* Uploaded PDFs List */}
+                          {activeDay.attachments && activeDay.attachments.length > 0 && (
+                            <div className="mt-4 space-y-2">
+                              {activeDay.attachments.map((pdf) => (
+                                <div key={pdf.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-indigo-300 transition-colors group">
+                                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center shrink-0">
+                                      <FileText className="w-5 h-5 text-red-600" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="font-medium text-gray-800 truncate">{pdf.displayName}</p>
+                                      <p className="text-xs text-gray-500">
+                                        {new Date(pdf.uploadedAt).toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-1 ml-2">
+                                    <a
+                                      href={pdf.filePath}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                                      title="View PDF"
+                                    >
+                                      <ExternalLink className="w-4 h-4" />
+                                    </a>
+                                    <button
+                                      onClick={() => {
+                                        const newName = prompt('Enter new name:', pdf.displayName);
+                                        if (newName && newName.trim()) {
+                                          handleRenamePdf(activeDay.id, pdf.id, newName.trim());
+                                        }
+                                      }}
+                                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                      title="Rename"
+                                    >
+                                      <Edit3 className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeletePdf(activeDay.id, pdf.id)}
+                                      className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                      title="Delete"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>
